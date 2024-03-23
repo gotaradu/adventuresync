@@ -1,12 +1,12 @@
 import * as React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import CustomContainer from "./components/CustomContainer";
+import CustomContainer from "./CustomContainer";
 import Grid from "@mui/material/Grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import Athlete from "./models/Athlete";
+import Athlete from "../models/Athlete";
 import { Button } from "@mui/material";
-import { gridItemProps } from "./css/home";
+import { gridItemProps } from "../css/home";
 export default function SignInSide() {
   const [athlete, setAthlete] = useState<Athlete | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ export default function SignInSide() {
     window.location.href =
       "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.1.147:8080/exchange_token&approval_prompt=force&scope=read";
   };
-  // TODO remove, this demo shouldn't need to reset the theme.
+
   const defaultTheme = createTheme();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function SignInSide() {
             Origin: "http://192.168.1.147:3000",
             "Content-Type": "application/json",
           },
-          credentials: "include", // Trimite cookie-urile de autentificare
+          credentials: "include",
         });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
@@ -36,7 +36,7 @@ export default function SignInSide() {
 
         const data: Athlete = await response.json();
 
-        setAthlete(data); // Setează utilizatorul cu datele primite în răspunsul JSON
+        setAthlete(data);
         setLoading(false);
       } catch (error) {
         console.error("Alte erori:", error);

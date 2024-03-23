@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import Athlete from "./models/Athlete";
+import Athlete from "../models/Athlete";
 
 function Login() {
   const [user, setUser] = useState<Athlete | null>(null);
