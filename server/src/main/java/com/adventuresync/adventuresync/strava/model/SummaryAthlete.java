@@ -35,6 +35,7 @@ public class SummaryAthlete {
 
     @Column(name = "country")
     private String country;
+
     @Column(name = "sex")
     private String sex;
     @JsonProperty("created_at")
@@ -132,23 +133,11 @@ public class SummaryAthlete {
         this.updatedAt = updatedAt;
     }
 
-    public void setAllFieldsExceptId(SummaryAthlete summaryAthlete) throws SummaryAthleteException {
-        Class<?> clazz = getClass();
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (!field.getName().equals("id") && !field.getName().equals("createdAt")) {
-                field.setAccessible(true);
-                Field newValueField;
-                try {
-                    newValueField = summaryAthlete.getClass().getDeclaredField(field.getName());
-                    newValueField.setAccessible(true);
-                    Object value = newValueField.get(summaryAthlete);
-                    field.set(this, value);
-                } catch (IllegalAccessException | NoSuchFieldException e2) {
-                    throw new SummaryAthleteException(ErrorCode.ERR005, summaryAthlete.toString());
-                }
-            }
-        }
+    public void setAllFieldsExceptId(SummaryAthlete summaryAthlete) {
+        setFirstName(summaryAthlete.getFirstName());
+        setLastName(summaryAthlete.getLastName());
+        setCountry(summaryAthlete.getCountry());
+        setSex(summaryAthlete.getSex());
     }
 
     @Override

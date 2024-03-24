@@ -7,6 +7,7 @@ import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -24,14 +25,15 @@ public class AthleteService {
         return summaryAthlete.getId() != null;
     }
 
-
+    @Transactional
     public void saveAthlete(SummaryAthlete summaryAthlete) throws SummaryAthleteException {
         if (isValidId(summaryAthlete)) {
             try {
                 SummaryAthlete existingSummaryAthlete = summaryAthleteDAO.findById(summaryAthlete.getId());
-                if (existingSummaryAthlete != null)
-                    updateAthlete(summaryAthlete);
-                else {
+                if (existingSummaryAthlete != null) {
+                    existingSummaryAthlete.setAllFieldsExceptId(summaryAthlete);
+                    updateAthlete(existingSummaryAthlete);
+                } else {
                     summaryAthleteDAO.save(summaryAthlete);
                 }
             } catch (HibernateException e) {
@@ -41,6 +43,7 @@ public class AthleteService {
             throw new SummaryAthleteException(ErrorCode.ERR001, summaryAthlete.getId());
         }
     }
+
 
     public void updateAthlete(SummaryAthlete updatedSummaryAthlete) throws SummaryAthleteException {
         SummaryAthlete summaryAthlete = summaryAthleteDAO.findById(updatedSummaryAthlete.getId());

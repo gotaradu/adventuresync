@@ -1,13 +1,9 @@
 package com.adventuresync.adventuresync.strava.dao;
 
-import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
-import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
-import com.adventuresync.adventuresync.strava.exceptions.SummaryAthleteException;
-import com.adventuresync.adventuresync.strava.model.DataForAccess;
+
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import org.hibernate.HibernateException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +33,9 @@ public class SummaryAthleteDAOImpl implements SummaryAthleteDAO {
     @Override
     @Transactional
     public void update(SummaryAthlete summaryAthlete) {
+        SummaryAthlete s = entityManager.find(SummaryAthlete.class, summaryAthlete.getId());
+        System.out.println(s);
         entityManager.merge(summaryAthlete);
+        System.out.println(summaryAthlete);
     }
 }

@@ -1,6 +1,7 @@
 package com.adventuresync.adventuresync.strava.services;
 
 import com.adventuresync.adventuresync.strava.dao.DataForAccessDAOImpl;
+import com.adventuresync.adventuresync.strava.dao.SummaryAthleteDAOImpl;
 import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
 import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
 import com.adventuresync.adventuresync.strava.exceptions.SummaryAthleteException;
@@ -23,11 +24,12 @@ import java.time.Instant;
 public class DataForAccessService {
 
     private final DataForAccessDAOImpl dataForAccessDAO;
-
+    private final SummaryAthleteDAOImpl summaryAthleteDAO;
 
 
     @Autowired
-    public DataForAccessService(DataForAccessDAOImpl dataForAccessDAO, AthleteService athleteService) {
+    public DataForAccessService(DataForAccessDAOImpl dataForAccessDAO, SummaryAthleteDAOImpl summaryAthleteDAO) {
+        this.summaryAthleteDAO = summaryAthleteDAO;
         this.dataForAccessDAO = dataForAccessDAO;
     }
 
@@ -44,11 +46,18 @@ public class DataForAccessService {
         return dataForAccessDAO.findByJwtToken(jwt);
     }
 
+    @Transactional
     public void updateData(DataForAccess data) {
         try {
+            SummaryAthlete a = summaryAthleteDAO.findById(data.getSummaryAthlete().getId());
             DataForAccess d = dataForAccessDAO.findByAthleteId(data.getSummaryAthlete().getId());
+            a.setAllFieldsExceptId(data.getSummaryAthlete());
+            summaryAthleteDAO.update(a);
             d.setDataForUpdate(data);
+            d.setSummaryAthlete(a);
             dataForAccessDAO.update(d);
+        } catch (SummaryAthleteException e) {
+            throw new SummaryAthleteException(ErrorCode.ERR004, data.getSummaryAthlete().toString());
         } catch (DataForAccessException e) {
             throw new DataForAccessException(ErrorCode.ERR003, data.getSummaryAthlete().toString());
         } catch (HibernateException error) {
