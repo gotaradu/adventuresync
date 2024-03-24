@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Athlete from "../models/Athlete";
 import { Button } from "@mui/material";
 import { gridItemProps } from "../css/home";
+import CustomMap from "./CustomMap";
 export default function SignInSide() {
   const [athlete, setAthlete] = useState<Athlete | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,9 @@ export default function SignInSide() {
       "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.1.147:8080/exchange_token&approval_prompt=force&scope=read";
   };
 
+  const handleActivities = () => {
+    window.location.href = "/activities";
+  };
   const defaultTheme = createTheme();
 
   useEffect(() => {
@@ -86,7 +90,12 @@ export default function SignInSide() {
         ) : (
           <Grid {...gridItemProps}>
             <CustomContainer>
-              <h1>Bun venit, {athlete.firstname}!</h1>
+              <div style={{ textAlign: "center" }}>
+                <h1>Bun venit, {athlete.firstname}!</h1>
+                <Button variant="contained" onClick={handleActivities}>
+                  Activities
+                </Button>
+              </div>
             </CustomContainer>
           </Grid>
         )}
