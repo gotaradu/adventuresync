@@ -38,7 +38,7 @@ public class AuthFilterService implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.147:3000");
+            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
             httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
@@ -52,10 +52,11 @@ public class AuthFilterService implements Filter {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
                 if (!tokenService.isExpiredJwt(jwt.get())) {
-                    httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.147:3000");
+                    httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
                     httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
                     httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                     httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+                    System.out.println("Intra aici");
                     dataForAccessDAO.findByJwtToken(jwt.get());
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {

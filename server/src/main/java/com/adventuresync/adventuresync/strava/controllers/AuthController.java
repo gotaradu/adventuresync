@@ -2,9 +2,7 @@ package com.adventuresync.adventuresync.strava.controllers;
 
 
 import com.adventuresync.adventuresync.strava.exceptions.CookieException;
-import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
 import com.adventuresync.adventuresync.strava.exceptions.JwtException;
-import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import com.adventuresync.adventuresync.strava.services.StravaLoginService;
 
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.view.RedirectView;
 
-@CrossOrigin(origins = "http://192.168.1.147:3000")
+@CrossOrigin(origins = "http://192.168.179.5:3000")
 @RestController
 public class AuthController {
 
