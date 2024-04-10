@@ -3,8 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useMapEvents } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 import { useState } from "react";
-import CustomContainer from "./CustomContainer";
-import { Container, width } from "@mui/system";
 
 const LocationMarker: React.FC = () => {
   const [position, setPosition] = useState<LatLngExpression | null>(null);

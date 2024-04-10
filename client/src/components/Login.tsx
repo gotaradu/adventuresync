@@ -8,13 +8,13 @@ function Login() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.1.147:8080/home", {
+        const response = await fetch("http://192.168.179.5:8080/home", {
           method: "GET",
           headers: {
-            Origin: "http://192.168.1.147:3000",
+            Origin: "http://192.168.179.5:3000",
             "Content-Type": "application/json",
           },
-          credentials: "include", // Trimite cookie-urile de autentificare
+          credentials: "include",
         });
         if (!response.ok) {
           throw new Error(`Request failed with status ${response.status}`);
@@ -22,7 +22,7 @@ function Login() {
 
         const data: Athlete = await response.json();
 
-        setUser(data); // Setează utilizatorul cu datele primite în răspunsul JSON
+        setUser(data);
       } catch (error) {
         console.error("Eroare în timpul cererii:", error);
       }
@@ -35,8 +35,6 @@ function Login() {
       {user ? (
         <div>
           <h1>Bun venit, {user.firstname}!</h1>
-
-          {/* Alte informații despre utilizator */}
         </div>
       ) : (
         <CircularProgress />

@@ -7,48 +7,34 @@ import { useEffect, useState } from "react";
 import Athlete from "../models/Athlete";
 import { Button } from "@mui/material";
 import { gridItemProps } from "../css/home";
-import CustomMap from "./CustomMap";
+import { useAuth } from "../context/AuthProvider";
+
 export default function SignInSide() {
-  const [athlete, setAthlete] = useState<Athlete | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    athlete,
+    isLoggedIn,
+    role,
+    loading,
+    setLoggedIn,
+    setRole,
+    checkAuth,
+    setLoading,
+  } = useAuth();
 
   const handleClick = () => {
     setLoading(true);
     window.location.href =
-      "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.1.147:8080/exchange_token&approval_prompt=force&scope=read";
+      "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.179.5:8080/exchange_token&approval_prompt=force&scope=read";
   };
 
   const handleActivities = () => {
     window.location.href = "/activities";
   };
+
   const defaultTheme = createTheme();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://192.168.1.147:8080/home", {
-          method: "GET",
-          headers: {
-            Origin: "http://192.168.1.147:3000",
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data: Athlete = await response.json();
-
-        setAthlete(data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Alte erori:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    checkAuth();
   }, []);
 
   return (

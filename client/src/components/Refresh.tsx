@@ -4,7 +4,7 @@ function Refresh() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://192.168.1.147:8080/refresh", {
+        const response = await fetch("http://192.168.179.5:8080/refresh", {
           method: "GET",
           credentials: "include",
           headers: {
