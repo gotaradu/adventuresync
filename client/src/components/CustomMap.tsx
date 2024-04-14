@@ -1,42 +1,91 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+} from "react-leaflet";
+import { ActivityCard } from "./ActivityCard";
+import React from "react";
+import StravaPoint from "../models/StravaPoint";
+import { useMap } from "react-leaflet";
+import DrawedActivity from "../models/DrawedActivity";
+import { icon } from "../utils/icons";
+import { useState, useEffect } from "react";
 
-import { useMapEvents } from "react-leaflet";
-import { LatLngExpression } from "leaflet";
-import { useState } from "react";
+const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
+  const map = useMap();
+  const [firstRender, setFirstRender] = useState(true); // Stare pentru a urmări primul randament
 
-const LocationMarker: React.FC = () => {
-  const [position, setPosition] = useState<LatLngExpression | null>(null);
+  useEffect(() => {
+    console.log("called");
+    if (!firstRender) {
+      map.setZoom(5);
+      map.setView([coords.latitude, coords.longitude], 20);
+    } else {
+      map.setView([coords.latitude, coords.longitude], 5);
+      setFirstRender(false); // Marchează componenta ca fiind deja randată o dată
+    }
+  }, [coords]);
 
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      console.log(e);
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
-
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
+  return null;
 };
 
-export default function CustomMap() {
+const CustomMap: React.FC<{
+  activities: DrawedActivity[];
+  mapCenter: StravaPoint;
+}> = ({ activities, mapCenter }) => {
+  console.log(mapCenter);
   return (
-    <MapContainer
-      center={[46.776069, 23.619047]}
-      zoom={13}
-      scrollWheelZoom={true}
-    >
+    <MapContainer scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LocationMarker />
+
+      {activities
+        ? activities.map((activity: DrawedActivity, index: number) => (
+            <React.Fragment key={index}>
+              {activity.mapExists && activity.pointsa ? (
+                <Marker
+                  riseOnHover
+                  icon={icon(activity.sport_type)}
+                  key={`marker-${index}`}
+                  position={[
+                    activity.pointsa[0].latitude,
+                    activity.pointsa[0].longitude,
+                  ]}
+                >
+                  <Popup>
+                    {
+                      // <ActivityCard
+                      //   activity={activity}
+                      //   updateMapCenter={updateMapCenter}
+                      // />
+                    }
+                  </Popup>
+                </Marker>
+              ) : (
+                ""
+              )}
+              <Polyline
+                key={`polyline-${index}`}
+                pathOptions={{ color: "red" }}
+                positions={
+                  activity.pointsa
+                    ? activity.pointsa.map((point: StravaPoint) => [
+                        point.latitude,
+                        point.longitude,
+                      ])
+                    : []
+                }
+              />
+            </React.Fragment>
+          ))
+        : ""}
+      <SetViewOnClick coords={mapCenter} />
     </MapContainer>
   );
-}
+};
+
+export default CustomMap;

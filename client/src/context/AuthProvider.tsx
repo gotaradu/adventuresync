@@ -8,6 +8,7 @@ import {
 
 import UserContext from "./UserContext";
 import Athlete from "../models/Athlete";
+import { error } from "console";
 const AuthContext = createContext<UserContext | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -16,7 +17,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState<"user" | "guest">("guest");
   const [athlete, setAthlete] = useState<Athlete | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const checkAuth = async () => {
     try {
@@ -29,14 +30,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         credentials: "include",
       });
       if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+        throw new Error("error when fetching");
       }
-
       const data: Athlete = await response.json();
+      console.log(data);
       setLoggedIn(true);
       setRole("user");
       setAthlete(data);
       setLoading(false);
+      return data;
     } catch (error) {
       console.error("Alte erori:", error);
     } finally {

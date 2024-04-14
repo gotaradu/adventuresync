@@ -1,10 +1,10 @@
-export default interface Activity {
+import StravaPoint from "./StravaPoint";
+
+export default interface DrawedActivity {
+  mapExists: boolean;
+  mapString: string;
   name: string;
-  map: {
-    id: string;
-    summary_polyline: string;
-    resource_state: number;
-  };
+  pointsa?: StravaPoint[];
   distance: number;
   sport_type: string;
   start_date: Date;

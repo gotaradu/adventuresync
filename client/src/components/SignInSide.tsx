@@ -21,13 +21,14 @@ export default function SignInSide() {
     setLoading,
   } = useAuth();
 
-  const handleClick = () => {
+  const handleLogin = () => {
     setLoading(true);
     window.location.href =
-      "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.179.5:8080/exchange_token&approval_prompt=force&scope=read";
+      "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.179.5:8080/exchange_token&approval_prompt=force&scope=read_all,activity:read_all";
   };
 
   const handleActivities = () => {
+    setLoading(true);
     window.location.href = "/activities";
   };
 
@@ -48,10 +49,7 @@ export default function SignInSide() {
             backgroundImage:
               "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
+            backgroundColor: "#607274",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -61,13 +59,23 @@ export default function SignInSide() {
           loading ? (
             <Grid {...gridItemProps}>
               <CustomContainer>
-                <CircularProgress />
+                <CircularProgress sx={{ color: "#607274" }} />
               </CustomContainer>
             </Grid>
           ) : (
             <Grid {...gridItemProps}>
               <CustomContainer>
-                <Button variant="contained" onClick={handleClick}>
+                <Button
+                  variant="contained"
+                  onClick={handleLogin}
+                  sx={{
+                    backgroundColor: "#607274",
+                    "&:hover": {
+                      cursor: "pointer",
+                      backgroundColor: "#9E9FA5",
+                    },
+                  }}
+                >
                   Login with Strava
                 </Button>
               </CustomContainer>
@@ -76,12 +84,28 @@ export default function SignInSide() {
         ) : (
           <Grid {...gridItemProps}>
             <CustomContainer>
-              <div style={{ textAlign: "center" }}>
-                <h1>Bun venit, {athlete.firstname}!</h1>
-                <Button variant="contained" onClick={handleActivities}>
-                  Activities
-                </Button>
-              </div>
+              {!loading ? (
+                <div style={{ textAlign: "center" }}>
+                  <h1>Bun venit, {athlete.firstname}!</h1>
+                  <Button
+                    variant="contained"
+                    onClick={handleActivities}
+                    sx={{
+                      backgroundColor: "#607274",
+                      "&:hover": {
+                        cursor: "pointer",
+                        backgroundColor: "#9E9FA5",
+                      },
+                    }}
+                  >
+                    Activities
+                  </Button>
+                </div>
+              ) : (
+                <CustomContainer>
+                  <CircularProgress sx={{ color: "#607274" }} />
+                </CustomContainer>
+              )}
             </CustomContainer>
           </Grid>
         )}

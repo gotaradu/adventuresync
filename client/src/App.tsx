@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -10,6 +10,7 @@ function App() {
   setTimeout(function () {
     window.dispatchEvent(new Event("resize"));
   }, 500);
+
   return (
     <AuthProvider>
       <BrowserRouter>
