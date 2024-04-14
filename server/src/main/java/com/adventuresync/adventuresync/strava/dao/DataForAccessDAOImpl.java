@@ -56,6 +56,7 @@ public class DataForAccessDAOImpl implements DataForAccessDAO {
     @Override
     @Transactional
     public DataForAccess findByJwtToken(String jwt) throws DataForAccessException{
+        System.out.println(jwt);
         Query query = entityManager.createNativeQuery("Select * from data_for_access WHERE data_for_access.json_token= :jwt", DataForAccess.class);
         query.setParameter("jwt", jwt);
         try {

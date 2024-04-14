@@ -3,12 +3,17 @@ package com.adventuresync.adventuresync.strava.services;
 import com.adventuresync.adventuresync.strava.exceptions.*;
 import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 @Service
@@ -40,6 +45,8 @@ public class StravaLoginService {
         }
     }
 
+
+
     //this is not ready yet
     public DataForAccess getNewAccessToken(String jwt) throws SummaryAthleteException {
 
@@ -70,6 +77,30 @@ public class StravaLoginService {
             return this.dataForAccessService.getDataFromToken(jwtCookie.get()).getSummaryAthlete();
         }
         throw new JwtException(ErrorCode.ERR0101, jwtCookie.get());
+    }
+
+    public void sentRefreshResponse(HttpServletResponse httpResponse, String jwt) throws IOException {
+        try {
+            DataForAccess data = getNewAccessToken(jwt);
+            cookieService.attachCookieToResponse(httpResponse, true, data.getJwtToken());
+
+            // Construiește și trimite răspunsul HTTP
+            sendResponse(httpResponse, HttpStatus.OK, data.getSummaryAthlete()); // presupunând că obiectul DataForAccess conține detalii relevante pentru răspuns
+        } catch (Exception e) {
+            // Gestionați excepțiile aici
+            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+    private void sendResponse(HttpServletResponse httpResponse, HttpStatus status, Object responseBody) throws IOException {
+        httpResponse.setStatus(status.value());
+        httpResponse.setContentType("application/json");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseJson = objectMapper.writeValueAsString(responseBody);
+        System.out.println(responseJson);
+        PrintWriter out = httpResponse.getWriter();
+        out.print(responseJson);
+        out.flush();
     }
 
 }

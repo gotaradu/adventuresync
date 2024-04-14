@@ -23,7 +23,7 @@ public class JwtToken {
             SecretKey key = Keys.hmacShaKeyFor(System.getenv("SECRET_KEY").getBytes());
             this.token = Jwts.builder()
                     .subject(dataForAccess.getSummaryAthlete().getId())
-                    .claim("access_token", dataForAccess.getAccessToken())
+                    .claim("role", "user")
                     .signWith(key).expiration(new Date(dataForAccess.getExpiresAt() * 1000))
                     .compact();
 
@@ -39,7 +39,7 @@ public class JwtToken {
 
             this.token = Jwts.builder()
                     .subject(athleteId)
-                    .claim("access_token", dataForAccess.getAccessToken())
+                    .claim("role", "user")
                     .signWith(key).expiration(new Date(dataForAccess.getExpiresAt() * 1000))
                     .compact();
 

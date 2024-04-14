@@ -44,26 +44,27 @@ public class AuthFilterService implements Filter {
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
             return;
         }
-        if (!httpRequest.getRequestURI().equals("/home")) {
+        if (!httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
         try {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
+                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
+                httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
                 if (!tokenService.isExpiredJwt(jwt.get())) {
-                    httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
-                    httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                    httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                    httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+
                     System.out.println("Intra aici");
                     dataForAccessDAO.findByJwtToken(jwt.get());
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
                     // aici trebuie sa fac rost de refresh token
-                    System.out.println("Intra aici");
-                    DataForAccess data = stravaLoginService.getNewAccessToken(jwt.get());
-                    cookieService.attachCookieToResponse(httpResponse, true, data.getJwtToken());
+                    System.out.println("Intra aici 2");
+                    stravaLoginService.sentRefreshResponse(httpResponse, jwt.get());
+                    filterChain.doFilter(servletRequest, servletResponse);
                 }
             } else {
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

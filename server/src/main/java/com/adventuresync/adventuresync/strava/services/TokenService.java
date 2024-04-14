@@ -77,7 +77,6 @@ public class TokenService {
                     parseSignedClaims(token);
             return new Data(data.getPayload().getSubject(), data.getPayload().getExpiration());
         } catch (ExpiredJwtException e) {
-            System.out.println(e.getClaims().getSubject() + " " + e.getClaims().getExpiration());
             return new Data(e.getClaims().getSubject(), e.getClaims().getExpiration());
         } catch (SignatureException e) {
             throw new JwtException(ErrorCode.ERR0102, token);

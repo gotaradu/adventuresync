@@ -16,7 +16,7 @@ public class StravaToken {
     private final String clientSecret;
     private String redirectUrl;
     private String code;
-    private String scope = "read";
+    private String scope = "activity:read_all";
 
     @Autowired
     public StravaToken() {
