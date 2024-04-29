@@ -4,11 +4,12 @@ import com.adventuresync.adventuresync.strava.exceptions.*;
 import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -22,7 +23,6 @@ public class StravaLoginService {
     private final DataForAccessService dataForAccessService;
     private final TokenService tokenService;
     private final CookieService cookieService;
-
     private final AthleteService athleteService;
 
     @Autowired
@@ -38,16 +38,13 @@ public class StravaLoginService {
             DataForAccess dataForAccess = tokenService.getDataForAccess(code, scope);
             dataForAccessService.persistDataForAccess(dataForAccess);
             cookieService.attachCookieToResponse(response, true, dataForAccess.getJwtToken());
-            String redirectUrl = "http://192.168.179.5:3000/";
+            String redirectUrl = "http://192.168.1.106:3000";
             return new RedirectView(redirectUrl);
         } catch (DataForAccessException e) {
-            return new RedirectView("http://192.168.179.5:3000/err?errorMessage=" + e.getErrorCode().getMessage());
+            return new RedirectView("http://192.168.1.106:3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
         }
     }
 
-
-
-    //this is not ready yet
     public DataForAccess getNewAccessToken(String jwt) throws SummaryAthleteException {
 
         try {
@@ -83,18 +80,15 @@ public class StravaLoginService {
         try {
             DataForAccess data = getNewAccessToken(jwt);
             cookieService.attachCookieToResponse(httpResponse, true, data.getJwtToken());
-
-            // Construiește și trimite răspunsul HTTP
-            sendResponse(httpResponse, HttpStatus.OK, data.getSummaryAthlete()); // presupunând că obiectul DataForAccess conține detalii relevante pentru răspuns
+            sendResponse(httpResponse, HttpStatus.OK, data.getSummaryAthlete());
         } catch (Exception e) {
-            // Gestionați excepțiile aici
             httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
     private void sendResponse(HttpServletResponse httpResponse, HttpStatus status, Object responseBody) throws IOException {
         httpResponse.setStatus(status.value());
         httpResponse.setContentType("application/json");
-
         ObjectMapper objectMapper = new ObjectMapper();
         String responseJson = objectMapper.writeValueAsString(responseBody);
         System.out.println(responseJson);

@@ -36,7 +36,7 @@ public class CookieService {
 
     public void attachCookieToResponse(HttpServletResponse response, boolean httpSecured, String jwtToken) {
         Cookie cookie = new Cookie("jwt", jwtToken);
-        cookie.setMaxAge(60*60*24);
+        cookie.setMaxAge(60 * 60 * 24);
         if (httpSecured) cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }

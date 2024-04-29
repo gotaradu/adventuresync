@@ -13,13 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AuthFilterConfig {
 
-
-    CookieService cookieService;
-    TokenService tokenService;
-
-    DataForAccessDAOImpl dataForAccessDAO;
-
-    StravaLoginService stravaLoginService;
+    private final CookieService cookieService;
+    private final TokenService tokenService;
+    private final DataForAccessDAOImpl dataForAccessDAO;
+    private final StravaLoginService stravaLoginService;
 
     @Autowired
     public AuthFilterConfig(CookieService cookieService, TokenService tokenService, DataForAccessDAOImpl dataForAccessDAO, StravaLoginService stravaLoginService) {

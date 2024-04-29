@@ -1,11 +1,8 @@
 package com.adventuresync.adventuresync.strava.services;
 
-import com.adventuresync.adventuresync.strava.controllers.AuthController;
 import com.adventuresync.adventuresync.strava.dao.DataForAccessDAOImpl;
 import com.adventuresync.adventuresync.strava.exceptions.CookieException;
 import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
-import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
-import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,12 +15,12 @@ import java.util.Optional;
 @Service
 public class AuthFilterService implements Filter {
 
-    CookieService cookieService;
-    TokenService tokenService;
+    private final CookieService cookieService;
+    private final TokenService tokenService;
 
-    DataForAccessDAOImpl dataForAccessDAO;
+    private final DataForAccessDAOImpl dataForAccessDAO;
 
-    StravaLoginService stravaLoginService;
+    private final StravaLoginService stravaLoginService;
 
     @Autowired
     public AuthFilterService(CookieService cookieService, TokenService tokenService, DataForAccessDAOImpl dataForAccessDAO, StravaLoginService stravaLoginService) {
@@ -38,7 +35,7 @@ public class AuthFilterService implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
+            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.106:3000");
             httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
@@ -51,7 +48,7 @@ public class AuthFilterService implements Filter {
         try {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
-                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.179.5:3000");
+                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.106:3000");
                 httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
                 httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
