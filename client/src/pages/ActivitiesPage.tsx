@@ -12,6 +12,7 @@ import decode from "../utils/decode";
 import StravaPoint from "../models/StravaPoint";
 import DrawedActivity from "../models/DrawedActivity";
 import { ActivityButton } from "../components/ActivityButton";
+import { ipAddress } from "../context/ipAddreses";
 
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -53,10 +54,10 @@ export const ActivitiesPage: React.FC = () => {
     setLoading(true);
     console.log("called");
     try {
-      const response = await fetch("http://192.168.179.5:8080/activities", {
+      const response = await fetch(`${ipAddress}:8080/activities`, {
         method: "GET",
         headers: {
-          Origin: "http://192.168.179.5:3000",
+          Origin: `${ipAddress}:3000`,
           "Content-Type": "application/json",
         },
         credentials: "include",

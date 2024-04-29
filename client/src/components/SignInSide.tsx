@@ -9,6 +9,8 @@ import { Button } from "@mui/material";
 import { gridItemProps } from "../css/home";
 import { useAuth } from "../context/AuthProvider";
 
+import { ipAddress } from "../context/ipAddreses";
+
 export default function SignInSide() {
   const {
     athlete,
@@ -23,8 +25,7 @@ export default function SignInSide() {
 
   const handleLogin = () => {
     setLoading(true);
-    window.location.href =
-      "http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=http://192.168.179.5:8080/exchange_token&approval_prompt=force&scope=read_all,activity:read_all";
+    window.location.href = `http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=${ipAddress}:8080/exchange_token&approval_prompt=force&scope=read_all,activity:read_all`;
   };
 
   const handleActivities = () => {

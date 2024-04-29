@@ -8,7 +8,7 @@ import {
 
 import UserContext from "./UserContext";
 import Athlete from "../models/Athlete";
-import { error } from "console";
+import { ipAddress } from "./ipAddreses";
 const AuthContext = createContext<UserContext | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -21,10 +21,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   const checkAuth = async () => {
     try {
-      const response = await fetch("http://192.168.179.5:8080/home", {
+      const response = await fetch(`${ipAddress}:8080/home`, {
         method: "GET",
         headers: {
-          Origin: "http://192.168.179.5:3000",
+          Origin: `${ipAddress}:3000`,
           "Content-Type": "application/json",
         },
         credentials: "include",

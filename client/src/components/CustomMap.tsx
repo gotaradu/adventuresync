@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 
 const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
   const map = useMap();
-  const [firstRender, setFirstRender] = useState(true); // Stare pentru a urmări primul randament
+  const [firstRender, setFirstRender] = useState(true);
 
   useEffect(() => {
     console.log("called");
@@ -24,7 +24,7 @@ const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
       map.setView([coords.latitude, coords.longitude], 20);
     } else {
       map.setView([coords.latitude, coords.longitude], 5);
-      setFirstRender(false); // Marchează componenta ca fiind deja randată o dată
+      setFirstRender(false);
     }
   }, [coords]);
 
