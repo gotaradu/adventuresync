@@ -20,10 +20,9 @@ const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
   useEffect(() => {
     console.log("called");
     if (!firstRender) {
-      map.setZoom(5);
-      map.flyTo([coords.latitude, coords.longitude], 15);
+      map.flyTo([coords.latitude, coords.longitude], 18);
     } else {
-      map.flyTo([coords.latitude, coords.longitude], 5);
+      map.setView([coords.latitude, coords.longitude], 5);
       setFirstRender(false);
     }
   }, [coords]);
@@ -74,7 +73,7 @@ const CustomMap: React.FC<{
                     },
                   }}
                 >
-                  <Popup>
+                  {/* <Popup>
                     {
                       // <ActivityCard
                       //   activity={activity}
@@ -82,7 +81,7 @@ const CustomMap: React.FC<{
                       //   updateLineColor={() => updateLineColor(index)}
                       // />
                     }
-                  </Popup>
+                  </Popup> */}
                 </Marker>
               ) : (
                 ""
