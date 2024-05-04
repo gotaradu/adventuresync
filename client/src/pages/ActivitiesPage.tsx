@@ -29,7 +29,7 @@ export const ActivitiesPage: React.FC = () => {
   } = useAuth();
 
   const [activities, setActivities] = useState<DrawedActivity[]>([]);
-
+  const [color, setColor] = useState<number | null>(null);
   const [mapCenter, setMapCenter] = useState<StravaPoint>({
     latitude: 50,
     longitude: 25,
@@ -37,6 +37,14 @@ export const ActivitiesPage: React.FC = () => {
 
   const updateMapCenter = (newCenter: StravaPoint) => {
     setMapCenter(newCenter);
+  };
+
+  const updateLineColor = (index: number | null = null) => {
+    console.log(index);
+    if (index && activities[index].mapExists) {
+      setColor(index);
+      console.log("changed color");
+    }
   };
 
   const checkLocalStorage = async () => {
@@ -70,7 +78,7 @@ export const ActivitiesPage: React.FC = () => {
 
       const newData: DrawedActivity[] = [];
       if (Array.isArray(data)) {
-        data.map((activity: Activity, index) => {
+        data.map((activity: Activity) => {
           if (activity.map.summary_polyline) {
             const decodedPolyline: StravaPoint[] = decode(
               activity.map.summary_polyline
@@ -79,6 +87,7 @@ export const ActivitiesPage: React.FC = () => {
               longitude: point.longitude, // [[lat,lon] ,[lat, lon]]
             }));
             const drawedActivity: DrawedActivity = {
+              selectedActivity: false,
               mapExists: true,
               mapString: activity.map.summary_polyline,
               pointsa: decodedPolyline,
@@ -87,6 +96,7 @@ export const ActivitiesPage: React.FC = () => {
             newData.push(drawedActivity);
           } else {
             const drawedActivity: DrawedActivity = {
+              selectedActivity: false,
               mapExists: false,
               mapString: activity.map.summary_polyline,
               pointsa: [],
@@ -130,10 +140,17 @@ export const ActivitiesPage: React.FC = () => {
           </CenteredContent>
         ) : (
           <React.Fragment>
-            <CustomMap activities={activities} mapCenter={mapCenter} />
+            <CustomMap
+              activities={activities}
+              mapCenter={mapCenter}
+              colorIndex={color}
+              updateLineColor={updateLineColor}
+              updateMapCenter={updateMapCenter}
+            />
             <ActivityButton
               activities={activities}
               updateMapCenter={updateMapCenter}
+              updateLineColor={updateLineColor}
             />
           </React.Fragment>
         )}

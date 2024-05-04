@@ -1,6 +1,7 @@
 import StravaPoint from "./StravaPoint";
 
 export default interface DrawedActivity {
+  selectedActivity: boolean;
   mapExists: boolean;
   mapString: string;
   name: string;

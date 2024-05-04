@@ -6,13 +6,15 @@ import StravaPoint from "../models/StravaPoint";
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
   updateMapCenter: (newCenter: StravaPoint) => void;
-}> = ({ activity, updateMapCenter }) => {
+  updateLineColor: () => void;
+}> = ({ activity, updateMapCenter, updateLineColor }) => {
   const handleClick = () => {
-    if (activity !== null && activity.pointsa)
+    if (activity !== null && activity.mapExists && activity.pointsa)
       updateMapCenter({
         latitude: activity.pointsa[0]?.latitude,
         longitude: activity.pointsa[0]?.longitude,
       });
+    updateLineColor();
   };
 
   return (

@@ -21,9 +21,9 @@ const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
     console.log("called");
     if (!firstRender) {
       map.setZoom(5);
-      map.setView([coords.latitude, coords.longitude], 20);
+      map.flyTo([coords.latitude, coords.longitude], 15);
     } else {
-      map.setView([coords.latitude, coords.longitude], 5);
+      map.flyTo([coords.latitude, coords.longitude], 5);
       setFirstRender(false);
     }
   }, [coords]);
@@ -34,8 +34,16 @@ const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
 const CustomMap: React.FC<{
   activities: DrawedActivity[];
   mapCenter: StravaPoint;
-}> = ({ activities, mapCenter }) => {
-  console.log(mapCenter);
+  colorIndex: number | null;
+  updateMapCenter: (newCenter: StravaPoint) => void;
+  updateLineColor: (index: number) => void;
+}> = ({
+  activities,
+  mapCenter,
+  colorIndex,
+  updateMapCenter,
+  updateLineColor,
+}) => {
   return (
     <MapContainer scrollWheelZoom={true}>
       <TileLayer
@@ -55,12 +63,23 @@ const CustomMap: React.FC<{
                     activity.pointsa[0].latitude,
                     activity.pointsa[0].longitude,
                   ]}
+                  eventHandlers={{
+                    click: () => {
+                      updateLineColor(index);
+                      if (activity && activity.pointsa && activity.pointsa[0])
+                        updateMapCenter({
+                          latitude: activity.pointsa[0].latitude,
+                          longitude: activity.pointsa[0].longitude,
+                        });
+                    },
+                  }}
                 >
                   <Popup>
                     {
                       // <ActivityCard
                       //   activity={activity}
                       //   updateMapCenter={updateMapCenter}
+                      //   updateLineColor={() => updateLineColor(index)}
                       // />
                     }
                   </Popup>
@@ -70,7 +89,12 @@ const CustomMap: React.FC<{
               )}
               <Polyline
                 key={`polyline-${index}`}
-                pathOptions={{ color: "red" }}
+                pathOptions={{
+                  color: colorIndex == index ? "red" : "green",
+                  opacity: colorIndex == index ? 1 : 0.2,
+                  weight: colorIndex == index ? 7 : 2,
+                  fillOpacity: colorIndex == index ? 7 : 0.2,
+                }}
                 positions={
                   activity.pointsa
                     ? activity.pointsa.map((point: StravaPoint) => [

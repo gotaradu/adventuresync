@@ -9,7 +9,8 @@ import StravaPoint from "../models/StravaPoint";
 export const ActivityButton: React.FC<{
   activities: DrawedActivity[];
   updateMapCenter: (newCenter: StravaPoint) => void;
-}> = ({ activities, updateMapCenter }) => {
+  updateLineColor: (index: number) => void;
+}> = ({ activities, updateMapCenter, updateLineColor }) => {
   const [open, setOpen] = useState(false);
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -23,10 +24,10 @@ export const ActivityButton: React.FC<{
           position: "absolute",
           zIndex: "400",
           top: "2%",
-          right: open ? "-1%" : "2%", // Adjusting right position when drawer is open
+          right: open ? "-1%" : "2%",
           background: "white",
           border: "2px solid black",
-          transition: "right 0.3s ease", // Adding transition for smooth animation
+          transition: "right 0.3s ease",
           display: open ? "none" : "",
         }}
         color="success"
@@ -41,6 +42,7 @@ export const ActivityButton: React.FC<{
                   key={`activityCard-${index}`}
                   activity={activity}
                   updateMapCenter={updateMapCenter}
+                  updateLineColor={() => updateLineColor(index)}
                 />
               ))
             : ""}
