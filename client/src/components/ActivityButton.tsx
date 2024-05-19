@@ -4,16 +4,22 @@ import { Drawer } from "@mui/material";
 
 import DrawedActivity from "../models/DrawedActivity";
 import { ActivityCard } from "./ActivityCard";
-import StravaPoint from "../models/StravaPoint";
+import { LatLng } from "leaflet";
 
 export const ActivityButton: React.FC<{
   activities: DrawedActivity[];
-  updateMapCenter: (newCenter: StravaPoint) => void;
+  updateMapCenter: (newCenter: LatLng) => void;
   updateLineColor: (index: number) => void;
-}> = ({ activities, updateMapCenter, updateLineColor }) => {
+  setZooming: (zooming: boolean) => void;
+}> = ({ activities, updateMapCenter, updateLineColor, setZooming }) => {
   const [open, setOpen] = useState(false);
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
+  };
+
+  const handleClick = (index: number, center: LatLng) => {
+    updateMapCenter(center);
+    setZooming(true);
   };
 
   return (
@@ -41,8 +47,10 @@ export const ActivityButton: React.FC<{
                 <ActivityCard
                   key={`activityCard-${index}`}
                   activity={activity}
-                  updateMapCenter={updateMapCenter}
-                  updateLineColor={() => updateLineColor(index)}
+                  updateMapCenter={(center: LatLng) =>
+                    handleClick(index, center)
+                  }
+                  updateLineColor={() => updateLineColor(activity.index)}
                 />
               ))
             : ""}

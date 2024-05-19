@@ -7,9 +7,8 @@ import CenteredContent from "../components/CenteredContent";
 import React from "react";
 import Activities from "../models/Activities";
 import Activity from "../models/Activity";
-
+import { LatLng } from "leaflet";
 import decode from "../utils/decode";
-import StravaPoint from "../models/StravaPoint";
 import DrawedActivity from "../models/DrawedActivity";
 import { ActivityButton } from "../components/ActivityButton";
 import { ipAddress } from "../context/ipAddreses";
@@ -30,37 +29,39 @@ export const ActivitiesPage: React.FC = () => {
 
   const [activities, setActivities] = useState<DrawedActivity[]>([]);
   const [color, setColor] = useState<number | null>(null);
-  const [mapCenter, setMapCenter] = useState<StravaPoint>({
-    latitude: 50,
-    longitude: 25,
-  });
-
-  const updateMapCenter = (newCenter: StravaPoint) => {
+  const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
+  const [zooming, setZooming] = useState(false);
+  const updateMapCenter = (newCenter: LatLng) => {
     setMapCenter(newCenter);
   };
 
   const updateLineColor = (index: number | null = null) => {
-    console.log(index);
-    if (index && activities[index].mapExists) {
+    if (index != null && activities[index].mapExists && index !== color) {
       setColor(index);
       console.log("changed color");
+    } else if (index && !activities[index].mapExists) {
+      console.log(index);
     }
   };
 
   const checkLocalStorage = async () => {
     setLoading(true);
-    if (localStorage.getItem("activities") !== null) {
+    if (localStorage.getItem("activities") !== null && isLoggedIn) {
       const storageActivities = JSON.parse(
         localStorage.getItem("activities") as string
       );
       setActivities(storageActivities);
       return true;
-    } else return false;
+    } else {
+      localStorage.removeItem("activities");
+      return false;
+    }
   };
 
   const fetchActivities = async () => {
     setLoading(true);
     console.log("called");
+
     try {
       const response = await fetch(`${ipAddress}:8080/activities`, {
         method: "GET",
@@ -70,42 +71,31 @@ export const ActivitiesPage: React.FC = () => {
         },
         credentials: "include",
       });
+
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
 
-      const data: Activities = await response.json();
+      const data = await response.json();
 
-      const newData: DrawedActivity[] = [];
-      if (Array.isArray(data)) {
-        data.map((activity: Activity) => {
-          if (activity.map.summary_polyline) {
-            const decodedPolyline: StravaPoint[] = decode(
-              activity.map.summary_polyline
-            ).map((point) => ({
-              latitude: point.latitude,
-              longitude: point.longitude, // [[lat,lon] ,[lat, lon]]
-            }));
-            const drawedActivity: DrawedActivity = {
-              selectedActivity: false,
-              mapExists: true,
-              mapString: activity.map.summary_polyline,
-              pointsa: decodedPolyline,
-              ...activity,
-            };
-            newData.push(drawedActivity);
-          } else {
-            const drawedActivity: DrawedActivity = {
-              selectedActivity: false,
-              mapExists: false,
-              mapString: activity.map.summary_polyline,
-              pointsa: [],
-              ...activity,
-            };
-            newData.push(drawedActivity);
-          }
-        });
-      }
+      const newData = data.map((activity: Activity, index: number) => {
+        const mapExists = !!activity.map.summary_polyline;
+        const pointsa = mapExists
+          ? decode(activity.map.summary_polyline).map((point) => ({
+              lat: point.latitude,
+              lng: point.longitude,
+            }))
+          : [];
+
+        return {
+          index,
+          mapExists,
+          mapString: activity.map.summary_polyline,
+          pointsa,
+          ...activity,
+        };
+      });
+
       localStorage.setItem("activities", JSON.stringify(newData));
       setActivities(newData);
 
@@ -144,13 +134,16 @@ export const ActivitiesPage: React.FC = () => {
               activities={activities}
               mapCenter={mapCenter}
               colorIndex={color}
-              updateLineColor={updateLineColor}
               updateMapCenter={updateMapCenter}
+              updateLineColor={updateLineColor}
+              zooming={zooming}
+              setZooming={setZooming}
             />
             <ActivityButton
               activities={activities}
               updateMapCenter={updateMapCenter}
               updateLineColor={updateLineColor}
+              setZooming={setZooming}
             />
           </React.Fragment>
         )}
@@ -165,3 +158,5 @@ export const ActivitiesPage: React.FC = () => {
     );
   }
 };
+
+export default ActivitiesPage;

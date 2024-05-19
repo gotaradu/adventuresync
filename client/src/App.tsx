@@ -1,11 +1,9 @@
-import React, { StrictMode } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignInSide from "./components/SignInSide";
-import CustomMap from "./components/CustomMap";
 import { AuthProvider } from "./context/AuthProvider";
-import { ActivitiesPage } from "./pages/ActivitiesPage";
+import ActivitiesPage from "./pages/ActivitiesPage";
+
 function App() {
   setTimeout(function () {
     window.dispatchEvent(new Event("resize"));

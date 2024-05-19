@@ -1,20 +1,18 @@
 import { ListItem, Card, Typography, Box } from "@mui/material";
 import DrawedActivity from "../models/DrawedActivity";
 import Favorite from "@mui/icons-material/Favorite";
-import StravaPoint from "../models/StravaPoint";
+import { LatLng } from "leaflet";
 //
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
-  updateMapCenter: (newCenter: StravaPoint) => void;
-  updateLineColor: () => void;
+  updateMapCenter: (newCenter: LatLng) => void;
+  updateLineColor: (index: number) => void;
 }> = ({ activity, updateMapCenter, updateLineColor }) => {
   const handleClick = () => {
     if (activity !== null && activity.mapExists && activity.pointsa)
-      updateMapCenter({
-        latitude: activity.pointsa[0]?.latitude,
-        longitude: activity.pointsa[0]?.longitude,
-      });
-    updateLineColor();
+      updateMapCenter(
+        new LatLng(activity.pointsa[0]?.lat, activity.pointsa[0]?.lng)
+      );
   };
 
   return (

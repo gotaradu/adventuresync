@@ -1,6 +1,6 @@
 export default function decode(encoded: string) {
   // array that holds the points
-
+  //console.log(encoded);
   var points = [];
   var index = 0,
     len = encoded.length;

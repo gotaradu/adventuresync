@@ -1,11 +1,11 @@
-import StravaPoint from "./StravaPoint";
+import { LatLng } from "leaflet";
 
 export default interface DrawedActivity {
-  selectedActivity: boolean;
+  index: number;
   mapExists: boolean;
   mapString: string;
   name: string;
-  pointsa?: StravaPoint[];
+  pointsa: LatLng[];
   distance: number;
   sport_type: string;
   start_date: Date;

@@ -4,109 +4,95 @@ import {
   Marker,
   Popup,
   Polyline,
+  useMapEvents,
 } from "react-leaflet";
 import { ActivityCard } from "./ActivityCard";
 import React from "react";
-import StravaPoint from "../models/StravaPoint";
-import { useMap } from "react-leaflet";
 import DrawedActivity from "../models/DrawedActivity";
 import { icon } from "../utils/icons";
-import { useState, useEffect } from "react";
-
-const SetViewOnClick: React.FC<{ coords: StravaPoint }> = ({ coords }) => {
-  const map = useMap();
-  const [firstRender, setFirstRender] = useState(true);
-
-  useEffect(() => {
-    console.log("called");
-    if (!firstRender) {
-      map.flyTo([coords.latitude, coords.longitude], 18);
-    } else {
-      map.setView([coords.latitude, coords.longitude], 5);
-      setFirstRender(false);
-    }
-  }, [coords]);
-
-  return null;
-};
+import { LatLng } from "leaflet";
+import { useState } from "react";
+import SetViewOnClick from "./SetViewOnClick";
+import ZoomHandler from "./ZoomHandler";
 
 const CustomMap: React.FC<{
   activities: DrawedActivity[];
-  mapCenter: StravaPoint;
+  mapCenter: LatLng;
   colorIndex: number | null;
-  updateMapCenter: (newCenter: StravaPoint) => void;
+  updateMapCenter: (newCenter: LatLng) => void;
   updateLineColor: (index: number) => void;
+  zooming: boolean;
+  setZooming: (zooming: boolean) => void;
 }> = ({
   activities,
   mapCenter,
   colorIndex,
   updateMapCenter,
   updateLineColor,
+  zooming,
+  setZooming,
 }) => {
+  const [mapIndex, setMapIndex] = useState<number | null>(null);
+  const handleClick = (
+    index: number,
+    center: LatLng,
+    activity: DrawedActivity
+  ) => {
+    updateMapCenter(center);
+    setMapIndex(index);
+    updateLineColor(index);
+    if (!zooming) {
+      setZooming(true);
+    }
+  };
+
+  const handleZoomEnd = () => {
+    setZooming(false);
+  };
+
   return (
     <MapContainer scrollWheelZoom={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
-      {activities
-        ? activities.map((activity: DrawedActivity, index: number) => (
-            <React.Fragment key={index}>
-              {activity.mapExists && activity.pointsa ? (
+      <ZoomHandler onZoomEnd={handleZoomEnd} />
+      {activities &&
+        activities.map(
+          (activity: DrawedActivity, index: number) =>
+            activity.mapExists &&
+            activity.pointsa &&
+            activity.pointsa[0] && (
+              <React.Fragment key={index}>
                 <Marker
                   riseOnHover
                   icon={icon(activity.sport_type)}
-                  key={`marker-${index}`}
-                  position={[
-                    activity.pointsa[0].latitude,
-                    activity.pointsa[0].longitude,
-                  ]}
+                  position={activity.pointsa[0]}
                   eventHandlers={{
                     click: () => {
-                      updateLineColor(index);
-                      if (activity && activity.pointsa && activity.pointsa[0])
-                        updateMapCenter({
-                          latitude: activity.pointsa[0].latitude,
-                          longitude: activity.pointsa[0].longitude,
-                        });
+                      handleClick(index, activity.pointsa[0], activity);
                     },
                   }}
-                >
-                  {/* <Popup>
-                    {
-                      // <ActivityCard
-                      //   activity={activity}
-                      //   updateMapCenter={updateMapCenter}
-                      //   updateLineColor={() => updateLineColor(index)}
-                      // />
-                    }
-                  </Popup> */}
-                </Marker>
-              ) : (
-                ""
-              )}
-              <Polyline
-                key={`polyline-${index}`}
-                pathOptions={{
-                  color: colorIndex == index ? "red" : "green",
-                  opacity: colorIndex == index ? 1 : 0.2,
-                  weight: colorIndex == index ? 7 : 2,
-                  fillOpacity: colorIndex == index ? 7 : 0.2,
-                }}
-                positions={
-                  activity.pointsa
-                    ? activity.pointsa.map((point: StravaPoint) => [
-                        point.latitude,
-                        point.longitude,
-                      ])
-                    : []
-                }
-              />
-            </React.Fragment>
-          ))
-        : ""}
-      <SetViewOnClick coords={mapCenter} />
+                />
+                {(!zooming || (zooming && colorIndex === index)) && (
+                  <Polyline
+                    key={`polyline-${index}`}
+                    pathOptions={{
+                      color: colorIndex === index ? "red" : "green",
+                      opacity: colorIndex === index ? 1 : 0,
+                    }}
+                    positions={activity.pointsa}
+                    smoothFactor={10}
+                  />
+                )}
+              </React.Fragment>
+            )
+        )}
+      <SetViewOnClick
+        coords={mapCenter}
+        colorIndex={mapIndex}
+        updateLineColor={updateLineColor}
+      />
     </MapContainer>
   );
 };
