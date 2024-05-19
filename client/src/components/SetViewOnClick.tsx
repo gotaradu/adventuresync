@@ -3,9 +3,7 @@ import { useState, useEffect } from "react";
 import { useMap } from "react-leaflet";
 const SetViewOnClick: React.FC<{
   coords: LatLng;
-  colorIndex: number | null;
-  updateLineColor: (colorIndex: number) => void;
-}> = ({ coords, colorIndex, updateLineColor }) => {
+}> = ({ coords }) => {
   const map = useMap();
   const [firstRender, setFirstRender] = useState(true);
 
@@ -13,7 +11,6 @@ const SetViewOnClick: React.FC<{
     if (!firstRender) {
       map.flyTo(coords, 18, { animate: true });
       const onZoomEnd = () => {
-        if (colorIndex) updateLineColor(colorIndex);
         map.off("zoomend", onZoomEnd);
       };
       map.on("zoomend", onZoomEnd);

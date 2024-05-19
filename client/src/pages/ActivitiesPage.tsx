@@ -5,35 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import CenteredContent from "../components/CenteredContent";
 import React from "react";
-import Activities from "../models/Activities";
 import Activity from "../models/Activity";
-import { LatLng } from "leaflet";
 import decode from "../utils/decode";
 import DrawedActivity from "../models/DrawedActivity";
-import { ActivityButton } from "../components/ActivityButton";
 import { ipAddress } from "../context/ipAddreses";
 
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    athlete,
-    isLoggedIn,
-    role,
-    loading,
-    setLoggedIn,
-    setRole,
-    setAthlete,
-    checkAuth,
-    setLoading,
-  } = useAuth();
+  const { isLoggedIn, loading, checkAuth, setLoading } = useAuth();
 
   const [activities, setActivities] = useState<DrawedActivity[]>([]);
   const [color, setColor] = useState<number | null>(null);
-  const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
-  const [zooming, setZooming] = useState(false);
-  const updateMapCenter = (newCenter: LatLng) => {
-    setMapCenter(newCenter);
-  };
 
   const updateLineColor = (index: number | null = null) => {
     if (index != null && activities[index].mapExists && index !== color) {
@@ -45,23 +27,24 @@ export const ActivitiesPage: React.FC = () => {
   };
 
   const checkLocalStorage = async () => {
+    console.log("from ls");
     setLoading(true);
-    if (localStorage.getItem("activities") !== null && isLoggedIn) {
+    if (localStorage.getItem("activities") !== null) {
+      console.log("first");
       const storageActivities = JSON.parse(
         localStorage.getItem("activities") as string
       );
       setActivities(storageActivities);
       return true;
     } else {
-      localStorage.removeItem("activities");
       return false;
     }
   };
 
   const fetchActivities = async () => {
     setLoading(true);
-    console.log("called");
-
+    console.log("from be");
+    console.log(0);
     try {
       const response = await fetch(`${ipAddress}:8080/activities`, {
         method: "GET",
@@ -98,7 +81,7 @@ export const ActivitiesPage: React.FC = () => {
 
       localStorage.setItem("activities", JSON.stringify(newData));
       setActivities(newData);
-
+      console.log("saved");
       return data;
     } catch (error) {
       console.error("Alte erori:", error);
@@ -109,7 +92,7 @@ export const ActivitiesPage: React.FC = () => {
     await checkAuth();
     const checked = await checkLocalStorage();
     setLoading(false);
-
+    console.log(activities);
     if (!checked) {
       if (activities.length == 0) {
         await fetchActivities();
@@ -129,23 +112,11 @@ export const ActivitiesPage: React.FC = () => {
             <CircularProgress />
           </CenteredContent>
         ) : (
-          <React.Fragment>
-            <CustomMap
-              activities={activities}
-              mapCenter={mapCenter}
-              colorIndex={color}
-              updateMapCenter={updateMapCenter}
-              updateLineColor={updateLineColor}
-              zooming={zooming}
-              setZooming={setZooming}
-            />
-            <ActivityButton
-              activities={activities}
-              updateMapCenter={updateMapCenter}
-              updateLineColor={updateLineColor}
-              setZooming={setZooming}
-            />
-          </React.Fragment>
+          <CustomMap
+            activities={activities}
+            colorIndex={color}
+            updateLineColor={updateLineColor}
+          />
         )}
       </React.Fragment>
     );

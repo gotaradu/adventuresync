@@ -1,4 +1,4 @@
-import { LatLng } from "leaflet";
+import { LatLng, LatLngExpression } from "leaflet";
 
 export default interface DrawedActivity {
   index: number;
@@ -18,4 +18,5 @@ export default interface DrawedActivity {
   total_elevation_gain: number;
   elev_high: number;
   elev_low: number;
+  start_latlng: LatLngExpression;
 }

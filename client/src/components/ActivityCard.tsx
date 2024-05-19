@@ -1,22 +1,15 @@
 import { ListItem, Card, Typography, Box } from "@mui/material";
 import DrawedActivity from "../models/DrawedActivity";
 import Favorite from "@mui/icons-material/Favorite";
-import { LatLng } from "leaflet";
-//
+import { LatLng, Map, map } from "leaflet";
+import { mapZoomHandler } from "../utils/handleMap";
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
-  updateMapCenter: (newCenter: LatLng) => void;
+  map: Map;
   updateLineColor: (index: number) => void;
-}> = ({ activity, updateMapCenter, updateLineColor }) => {
-  const handleClick = () => {
-    if (activity !== null && activity.mapExists && activity.pointsa)
-      updateMapCenter(
-        new LatLng(activity.pointsa[0]?.lat, activity.pointsa[0]?.lng)
-      );
-  };
-
+}> = ({ activity, map, updateLineColor }) => {
   return (
-    <ListItem onClick={handleClick}>
+    <ListItem onClick={() => mapZoomHandler(activity, map, updateLineColor)}>
       <Box width={250}>
         <Card
           sx={{

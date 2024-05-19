@@ -1,54 +1,18 @@
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Polyline,
-  useMapEvents,
-} from "react-leaflet";
-import { ActivityCard } from "./ActivityCard";
-import React from "react";
-import DrawedActivity from "../models/DrawedActivity";
-import { icon } from "../utils/icons";
+import { MapContainer, TileLayer } from "react-leaflet";
+import React, { useState } from "react";
 import { LatLng } from "leaflet";
-import { useState } from "react";
+import DrawedActivity from "../models/DrawedActivity";
 import SetViewOnClick from "./SetViewOnClick";
-import ZoomHandler from "./ZoomHandler";
+import ActivitiesDrawer from "./ActivitiesDrawer";
+import CustomPolylines from "./CustomPolylines";
+import CustomMarkers from "./CustomMarkers";
 
 const CustomMap: React.FC<{
   activities: DrawedActivity[];
-  mapCenter: LatLng;
   colorIndex: number | null;
-  updateMapCenter: (newCenter: LatLng) => void;
   updateLineColor: (index: number) => void;
-  zooming: boolean;
-  setZooming: (zooming: boolean) => void;
-}> = ({
-  activities,
-  mapCenter,
-  colorIndex,
-  updateMapCenter,
-  updateLineColor,
-  zooming,
-  setZooming,
-}) => {
-  const [mapIndex, setMapIndex] = useState<number | null>(null);
-  const handleClick = (
-    index: number,
-    center: LatLng,
-    activity: DrawedActivity
-  ) => {
-    updateMapCenter(center);
-    setMapIndex(index);
-    updateLineColor(index);
-    if (!zooming) {
-      setZooming(true);
-    }
-  };
-
-  const handleZoomEnd = () => {
-    setZooming(false);
-  };
+}> = ({ activities, colorIndex, updateLineColor }) => {
+  const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
 
   return (
     <MapContainer scrollWheelZoom={true}>
@@ -56,41 +20,15 @@ const CustomMap: React.FC<{
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <ZoomHandler onZoomEnd={handleZoomEnd} />
-      {activities &&
-        activities.map(
-          (activity: DrawedActivity, index: number) =>
-            activity.mapExists &&
-            activity.pointsa &&
-            activity.pointsa[0] && (
-              <React.Fragment key={index}>
-                <Marker
-                  riseOnHover
-                  icon={icon(activity.sport_type)}
-                  position={activity.pointsa[0]}
-                  eventHandlers={{
-                    click: () => {
-                      handleClick(index, activity.pointsa[0], activity);
-                    },
-                  }}
-                />
-                {(!zooming || (zooming && colorIndex === index)) && (
-                  <Polyline
-                    key={`polyline-${index}`}
-                    pathOptions={{
-                      color: colorIndex === index ? "red" : "green",
-                      opacity: colorIndex === index ? 1 : 0,
-                    }}
-                    positions={activity.pointsa}
-                    smoothFactor={10}
-                  />
-                )}
-              </React.Fragment>
-            )
-        )}
-      <SetViewOnClick
-        coords={mapCenter}
-        colorIndex={mapIndex}
+
+      <CustomMarkers
+        activities={activities}
+        updateLineColor={updateLineColor}
+      />
+      <CustomPolylines activities={activities} colorIndex={colorIndex} />
+      <SetViewOnClick coords={mapCenter} />
+      <ActivitiesDrawer
+        activities={activities}
         updateLineColor={updateLineColor}
       />
     </MapContainer>
