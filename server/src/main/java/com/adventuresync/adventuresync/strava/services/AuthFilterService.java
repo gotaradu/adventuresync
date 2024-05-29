@@ -35,7 +35,7 @@ public class AuthFilterService implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.106:3000");
+            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.2.208:3000");
             httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
@@ -48,7 +48,7 @@ public class AuthFilterService implements Filter {
         try {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
-                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.106:3000");
+                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.2.208:3000");
                 httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
                 httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 httpResponse.setHeader("Access-Control-Allow-Credentials", "true");

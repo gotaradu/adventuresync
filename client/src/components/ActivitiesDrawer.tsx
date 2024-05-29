@@ -39,6 +39,7 @@ const ActivitiesDrawer: React.FC<{
                 <ActivityCard
                   key={`activityCard-${index}`}
                   activity={activity}
+                  index={index}
                   map={map}
                   updateLineColor={updateLineColor}
                 />

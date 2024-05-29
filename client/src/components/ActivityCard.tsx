@@ -5,9 +5,11 @@ import { LatLng, Map, map } from "leaflet";
 import { mapZoomHandler } from "../utils/handleMap";
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
+  index: Number;
   map: Map;
   updateLineColor: (index: number) => void;
-}> = ({ activity, map, updateLineColor }) => {
+}> = ({ activity, index, map, updateLineColor }) => {
+  console.log(activity.start_ll);
   return (
     <ListItem onClick={() => mapZoomHandler(activity, map, updateLineColor)}>
       <Box width={250}>
@@ -28,7 +30,12 @@ export const ActivityCard: React.FC<{
             </Typography>
             <div style={{ border: "black" }}>
               <Favorite />
-
+              <div>
+                lat: {activity.start_ll ? activity.start_ll.lat : "not known"}
+              </div>
+              <div>
+                lng: {activity.start_ll ? activity.start_ll.lng : "not known"}
+              </div>
               {activity.average_heartrate}
 
               <div>{activity.distance}</div>

@@ -5,7 +5,7 @@ const mapZoomHandler = (
   map: Map,
   updateLineColor: (index: number) => void
 ) => {
-  map.flyTo(activity.start_latlng, 18, { animate: true });
+  if (activity.start_ll) map.flyTo(activity.start_ll, 18, { animate: true });
   const onZoomEnd = () => {
     map.off("zoomend", onZoomEnd);
     updateLineColor(activity.index);

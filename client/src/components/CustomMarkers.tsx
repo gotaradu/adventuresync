@@ -22,7 +22,7 @@ const CustomMarkers: React.FC<{
                 riseOnHover
                 riseOffset={index}
                 icon={icon(activity.sport_type)}
-                position={activity.start_latlng}
+                position={activity.start_ll}
                 eventHandlers={{
                   click: () => mapZoomHandler(activity, map, updateLineColor),
                 }}

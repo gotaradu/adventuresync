@@ -9,6 +9,7 @@ import Activity from "../models/Activity";
 import decode from "../utils/decode";
 import DrawedActivity from "../models/DrawedActivity";
 import { ipAddress } from "../context/ipAddreses";
+import { LatLng } from "leaflet";
 
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -63,6 +64,14 @@ export const ActivitiesPage: React.FC = () => {
 
       const newData = data.map((activity: Activity, index: number) => {
         const mapExists = !!activity.map.summary_polyline;
+        console.log(activity.start_latlng);
+        let start_ll = null;
+        if (activity.start_latlng[0] && activity.start_latlng[1])
+          start_ll = new LatLng(
+            activity.start_latlng[0],
+            activity.start_latlng[1]
+          );
+
         const pointsa = mapExists
           ? decode(activity.map.summary_polyline).map((point) => ({
               lat: point.latitude,
@@ -76,10 +85,12 @@ export const ActivitiesPage: React.FC = () => {
           mapString: activity.map.summary_polyline,
           pointsa,
           ...activity,
+          start_ll,
         };
       });
 
-      localStorage.setItem("activities", JSON.stringify(newData));
+      if (newData.length > 0)
+        localStorage.setItem("activities", JSON.stringify(newData));
       setActivities(newData);
       console.log("saved");
       return data;

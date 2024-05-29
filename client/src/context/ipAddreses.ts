@@ -1,1 +1,1 @@
- export const ipAddress : String = "http://192.168.1.106";
+ export const ipAddress : String = "http://192.168.2.208";
