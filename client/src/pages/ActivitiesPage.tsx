@@ -16,28 +16,10 @@ export const ActivitiesPage: React.FC = () => {
   const { isLoggedIn, loading, checkAuth, setLoading } = useAuth();
 
   const [activities, setActivities] = useState<DrawedActivity[]>([]);
-  const [color, setColor] = useState<number | null>(null);
-
-  const updateLineColor = (index: number | null = null, change: boolean) => {
-    console.log(color + " " + index);
-    if (index == color && change === false) return;
-    if (
-      index != null &&
-      index >= 0 &&
-      activities[index].mapExists &&
-      index !== color &&
-      change == true
-    ) {
-      setColor(index);
-      console.log("changed color");
-    }
-  };
 
   const checkLocalStorage = async () => {
-    console.log("from ls");
     setLoading(true);
     if (localStorage.getItem("activities") !== null) {
-      console.log("first");
       const storageActivities = JSON.parse(
         localStorage.getItem("activities") as string
       );
@@ -50,8 +32,6 @@ export const ActivitiesPage: React.FC = () => {
 
   const fetchActivities = async () => {
     setLoading(true);
-    console.log("from be");
-    console.log(0);
     try {
       const response = await fetch(`${ipAddress}:8080/activities`, {
         method: "GET",
@@ -98,7 +78,6 @@ export const ActivitiesPage: React.FC = () => {
       if (newData.length > 0)
         localStorage.setItem("activities", JSON.stringify(newData));
       setActivities(newData);
-      console.log("saved");
       return data;
     } catch (error) {
       console.error("Alte erori:", error);
@@ -109,7 +88,6 @@ export const ActivitiesPage: React.FC = () => {
     await checkAuth();
     const checked = await checkLocalStorage();
     setLoading(false);
-    console.log(activities);
     if (!checked) {
       if (activities.length == 0) {
         await fetchActivities();
@@ -118,6 +96,7 @@ export const ActivitiesPage: React.FC = () => {
     }
   };
   useEffect(() => {
+    console.log("called");
     waitAuth();
   }, []);
 
@@ -129,11 +108,7 @@ export const ActivitiesPage: React.FC = () => {
             <CircularProgress />
           </CenteredContent>
         ) : (
-          <CustomMap
-            activities={activities}
-            colorIndex={color}
-            updateLineColor={updateLineColor}
-          />
+          <CustomMap activities={activities} />
         )}
       </React.Fragment>
     );

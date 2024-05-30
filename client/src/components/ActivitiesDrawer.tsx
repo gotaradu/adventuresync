@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button, CardHeader, Card, List } from "@mui/material";
 import { Drawer } from "@mui/material";
 import { useMap } from "react-leaflet";
@@ -7,18 +7,29 @@ import { ActivityCard } from "./ActivityCard";
 
 const ActivitiesDrawer: React.FC<{
   activities: DrawedActivity[];
-  updateLineColor: (index: number | null, change: boolean) => void;
-}> = ({ activities, updateLineColor }) => {
+  setColor: (index: number | null) => void;
+}> = ({ activities, setColor }) => {
   const [open, setOpen] = useState(false);
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
+  const toggleDrawer = () => {
+    setOpen((prev) => !prev);
   };
   const map = useMap();
-  console.log("reload main");
+  const renderedCards = useMemo(() => {
+    return activities.map((activity, index) => (
+      <ActivityCard
+        key={`activityCard-${index}`}
+        activity={activity}
+        index={index}
+        map={map}
+        setColor={setColor}
+      />
+    ));
+  }, [activities, map]);
+
   return (
     <>
       <Button
-        onClick={toggleDrawer(true)}
+        onClick={toggleDrawer}
         sx={{
           position: "absolute",
           zIndex: "400",
@@ -33,21 +44,11 @@ const ActivitiesDrawer: React.FC<{
       >
         {open ? "Close Activities" : "Open Activities"}
       </Button>
-      <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
+      <Drawer open={open} onClose={toggleDrawer} anchor="right">
         <List>
-          {activities
-            ? activities.map((activity: DrawedActivity, index: number) => (
-                <ActivityCard
-                  key={`activityCard-${index}`}
-                  activity={activity}
-                  index={index}
-                  map={map}
-                  updateLineColor={updateLineColor}
-                />
-              ))
-            : ""}
+          {renderedCards}
           <Button
-            onClick={toggleDrawer(false)}
+            onClick={toggleDrawer}
             sx={{
               position: "relative",
               zIndex: "400",
@@ -61,7 +62,6 @@ const ActivitiesDrawer: React.FC<{
           </Button>
         </List>
       </Drawer>
-      ;
     </>
   );
 };

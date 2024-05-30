@@ -3,13 +3,13 @@ import { Map } from "leaflet";
 const mapZoomHandler = (
   activity: DrawedActivity,
   map: Map,
-  updateLineColor: (index: number | null, change: boolean) => void
+  setColor: (index: number | null) => void
 ) => {
   if (activity.start_ll) map.flyTo(activity.start_ll, 18, { animate: true });
-  updateLineColor(-1, false);
+  setColor(-1);
   const onZoomEnd = () => {
     map.off("zoomend", onZoomEnd);
-    updateLineColor(activity.index, true);
+    setColor(activity.index);
   };
   map.on("zoomend", onZoomEnd);
 };

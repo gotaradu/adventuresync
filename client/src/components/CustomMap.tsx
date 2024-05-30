@@ -8,52 +8,23 @@ import CustomPolylines from "./CustomPolylines";
 import CustomMarkers from "./CustomMarkers";
 import { cachedTileLayer } from "./CustomTileLayer";
 
-const CustomTileLayerComponent: React.FC = () => {
-  const map = useMap();
-
-  React.useEffect(() => {
-    const tileLayer = cachedTileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }
-    );
-    tileLayer.addTo(map);
-
-    return () => {
-      map.removeLayer(tileLayer);
-    };
-  }, [map]);
-
-  return null;
-};
-
 const CustomMap: React.FC<{
   activities: DrawedActivity[];
-  colorIndex: number | null;
-  updateLineColor: (index: number | null, change: boolean) => void;
-}> = ({ activities, colorIndex, updateLineColor }) => {
+}> = ({ activities }) => {
   const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
+  const [color, setColor] = useState<number | null>(null);
 
   return (
     <MapContainer scrollWheelZoom={true}>
-      {/* <TileLayer
+      <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      /> */}
-      <CustomTileLayerComponent />
+      />
 
-      <CustomMarkers
-        activities={activities}
-        updateLineColor={updateLineColor}
-      />
-      <CustomPolylines activities={activities} colorIndex={colorIndex} />
+      <CustomMarkers activities={activities} setColor={setColor} />
+      <CustomPolylines activities={activities} colorIndex={color} />
       <SetViewOnClick coords={mapCenter} />
-      <ActivitiesDrawer
-        activities={activities}
-        updateLineColor={updateLineColor}
-      />
+      <ActivitiesDrawer activities={activities} setColor={setColor} />
     </MapContainer>
   );
 };

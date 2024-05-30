@@ -7,11 +7,11 @@ export const ActivityCard: React.FC<{
   activity: DrawedActivity;
   index: Number;
   map: Map;
-  updateLineColor: (index: number | null, change: boolean) => void;
-}> = ({ activity, index, map, updateLineColor }) => {
+  setColor: (index: number | null) => void;
+}> = ({ activity, index, map, setColor }) => {
   console.log("reload " + index);
   return (
-    <ListItem onClick={() => mapZoomHandler(activity, map, updateLineColor)}>
+    <ListItem onClick={() => mapZoomHandler(activity, map, setColor)}>
       <Box width={250}>
         <Card
           sx={{

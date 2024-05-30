@@ -6,8 +6,8 @@ import { mapZoomHandler } from "../utils/handleMap";
 
 const CustomMarkers: React.FC<{
   activities: DrawedActivity[];
-  updateLineColor: (index: number | null, change: boolean) => void;
-}> = ({ activities, updateLineColor }) => {
+  setColor: (index: number | null) => void;
+}> = ({ activities, setColor }) => {
   const map = useMap();
   return (
     <>
@@ -24,7 +24,7 @@ const CustomMarkers: React.FC<{
                 icon={icon(activity.sport_type)}
                 position={activity.start_ll}
                 eventHandlers={{
-                  click: () => mapZoomHandler(activity, map, updateLineColor),
+                  click: () => mapZoomHandler(activity, map, setColor),
                 }}
               />
             )
