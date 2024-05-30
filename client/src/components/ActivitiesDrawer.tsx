@@ -7,13 +7,14 @@ import { ActivityCard } from "./ActivityCard";
 
 const ActivitiesDrawer: React.FC<{
   activities: DrawedActivity[];
-  updateLineColor: (index: number) => void;
+  updateLineColor: (index: number | null, change: boolean) => void;
 }> = ({ activities, updateLineColor }) => {
   const [open, setOpen] = useState(false);
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
   };
   const map = useMap();
+  console.log("reload main");
   return (
     <>
       <Button

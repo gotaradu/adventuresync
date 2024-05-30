@@ -16,7 +16,7 @@ export default function decode(encoded: string) {
       shift += 5;
     } while (b >= 0x20);
 
-    var dlat = (result & 1) != 0 ? ~(result >> 1) : result >> 1;
+    var dlat = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
     lat += dlat;
     shift = 0;
     result = 0;
@@ -25,7 +25,7 @@ export default function decode(encoded: string) {
       result |= (b & 0x1f) << shift;
       shift += 5;
     } while (b >= 0x20);
-    var dlng = (result & 1) != 0 ? ~(result >> 1) : result >> 1;
+    var dlng = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
     lng += dlng;
 
     points.push({ latitude: lat / 1e5, longitude: lng / 1e5 });

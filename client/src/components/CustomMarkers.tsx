@@ -6,7 +6,7 @@ import { mapZoomHandler } from "../utils/handleMap";
 
 const CustomMarkers: React.FC<{
   activities: DrawedActivity[];
-  updateLineColor: (index: number) => void;
+  updateLineColor: (index: number | null, change: boolean) => void;
 }> = ({ activities, updateLineColor }) => {
   const map = useMap();
   return (

@@ -7,9 +7,9 @@ export const ActivityCard: React.FC<{
   activity: DrawedActivity;
   index: Number;
   map: Map;
-  updateLineColor: (index: number) => void;
+  updateLineColor: (index: number | null, change: boolean) => void;
 }> = ({ activity, index, map, updateLineColor }) => {
-  console.log(activity.start_ll);
+  console.log("reload " + index);
   return (
     <ListItem onClick={() => mapZoomHandler(activity, map, updateLineColor)}>
       <Box width={250}>

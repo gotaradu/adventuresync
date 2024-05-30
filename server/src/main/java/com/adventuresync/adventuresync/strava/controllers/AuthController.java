@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.view.RedirectView;
 
-@CrossOrigin(origins = "http://192.168.2.208:3000")
+@CrossOrigin(origins = "http://192.168.2.211:3000")
 @RestController
 public class AuthController {
 

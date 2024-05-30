@@ -29,11 +29,11 @@ const defaultIcon = L.icon({
 });
 
 const icon = (sport_type: string) => {
-  return sport_type == "Run" || sport_type == "TrailRun"
+  return sport_type === "Run" || sport_type === "TrailRun"
     ? runningIcon
-    : sport_type == "MountainBikeRide " || sport_type == "Ride"
+    : sport_type === "MountainBikeRide " || sport_type === "Ride"
     ? cyclingIcon
-    : sport_type == "Soccer"
+    : sport_type === "Soccer"
     ? soccerIcon
     : defaultIcon;
 };

@@ -9,7 +9,7 @@ const SetViewOnClick: React.FC<{
 
   useEffect(() => {
     if (!firstRender) {
-      map.flyTo(coords, 18, { animate: true });
+      map.flyTo(coords, 18, { animate: true, duration: 10 });
       const onZoomEnd = () => {
         map.off("zoomend", onZoomEnd);
       };

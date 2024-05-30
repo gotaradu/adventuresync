@@ -18,12 +18,18 @@ export const ActivitiesPage: React.FC = () => {
   const [activities, setActivities] = useState<DrawedActivity[]>([]);
   const [color, setColor] = useState<number | null>(null);
 
-  const updateLineColor = (index: number | null = null) => {
-    if (index != null && activities[index].mapExists && index !== color) {
+  const updateLineColor = (index: number | null = null, change: boolean) => {
+    console.log(color + " " + index);
+    if (index == color && change === false) return;
+    if (
+      index != null &&
+      index >= 0 &&
+      activities[index].mapExists &&
+      index !== color &&
+      change == true
+    ) {
       setColor(index);
       console.log("changed color");
-    } else if (index && !activities[index].mapExists) {
-      console.log(index);
     }
   };
 
