@@ -1,12 +1,6 @@
-import {
-  createContext,
-  useState,
-  ReactNode,
-  useContext,
-  useEffect,
-} from "react";
+import { createContext, useState, ReactNode, useContext } from "react";
 
-import UserContext from "./UserContext";
+import UserContext from "./UserContextType";
 import Athlete from "../models/Athlete";
 import { ipAddress } from "./ipAddreses";
 const AuthContext = createContext<UserContext | undefined>(undefined);
@@ -17,8 +11,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [role, setRole] = useState<"user" | "guest">("guest");
   const [athlete, setAthlete] = useState<Athlete | null>(null);
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
+  console.log("called");
   const checkAuth = async () => {
     try {
       const response = await fetch(`${ipAddress}:8080/home`, {
