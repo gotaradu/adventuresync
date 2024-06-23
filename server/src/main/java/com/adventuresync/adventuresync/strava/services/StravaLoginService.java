@@ -38,10 +38,10 @@ public class StravaLoginService {
             DataForAccess dataForAccess = tokenService.getDataForAccess(code, scope);
             dataForAccessService.persistDataForAccess(dataForAccess);
             cookieService.attachCookieToResponse(response, true, dataForAccess.getJwtToken());
-            String redirectUrl = "http://192.168.2.211:3000";
+            String redirectUrl = "http://192.168.1.147:3000";
             return new RedirectView(redirectUrl);
         } catch (DataForAccessException e) {
-            return new RedirectView("http://192.168.2.211:3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
+            return new RedirectView("http://192.168.1.147:3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
         }
     }
 
