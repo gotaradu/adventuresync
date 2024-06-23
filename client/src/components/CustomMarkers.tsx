@@ -3,12 +3,17 @@ import React from "react";
 import { icon } from "../utils/icons";
 import DrawedActivity from "../models/DrawedActivity";
 import { mapZoomHandler } from "../utils/handleMap";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../context/store";
+import { arrayToLatLng } from "../utils/handleMap";
+import { v4 as uuidv4 } from "uuid";
+import { setSelected } from "../context/activitiesSlice";
 const CustomMarkers: React.FC<{
-  activities: DrawedActivity[];
   setColor: (index: number | null) => void;
-}> = ({ activities, setColor }) => {
+}> = () => {
   const map = useMap();
+  const { activities } = useSelector((state: RootState) => state.activities);
+  const dispatch = useDispatch();
   return (
     <>
       {activities &&
@@ -18,13 +23,16 @@ const CustomMarkers: React.FC<{
             activity.pointsa &&
             activity.pointsa.length > 0 && (
               <Marker
-                key={`marker-${index}`}
+                key={uuidv4()}
                 riseOnHover
                 riseOffset={index}
                 icon={icon(activity.sport_type)}
-                position={activity.start_ll}
+                position={arrayToLatLng(activity.start_latlng)}
                 eventHandlers={{
-                  click: () => mapZoomHandler(activity, map, setColor),
+                  click: () => {
+                    mapZoomHandler(activity, map);
+                    dispatch(setSelected(index));
+                  },
                 }}
               />
             )

@@ -18,5 +18,5 @@ export default interface DrawedActivity {
   total_elevation_gain: number;
   elev_high: number;
   elev_low: number;
-  start_ll: LatLng;
+  start_latlng: [number, number];
 }

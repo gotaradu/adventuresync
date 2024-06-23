@@ -1,22 +1,31 @@
 import { ListItem, Card, Typography, Box } from "@mui/material";
 import DrawedActivity from "../models/DrawedActivity";
 import Favorite from "@mui/icons-material/Favorite";
-import { LatLng, Map, map } from "leaflet";
 import { mapZoomHandler } from "../utils/handleMap";
+import { useDispatch, useSelector } from "react-redux";
+import { Map } from "leaflet";
+import { RootState } from "../context/store";
+import { setSelected } from "../context/activitiesSlice";
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
-  index: Number;
+  index: number;
   map: Map;
-  setColor: (index: number | null) => void;
-}> = ({ activity, index, map, setColor }) => {
-  console.log("reload " + index);
+}> = ({ activity, index, map }) => {
+  const { selected } = useSelector((state: RootState) => state.activities);
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    mapZoomHandler(activity, map);
+    dispatch(setSelected(index));
+  };
+
   return (
-    <ListItem onClick={() => mapZoomHandler(activity, map, setColor)}>
+    <ListItem onClick={handleClick}>
       <Box width={250}>
         <Card
           sx={{
             margin: "2px",
-            border: "solid black 3px",
+            border: index === selected ? "solid red 3px" : "solid black 3px",
             cursor: "pointer",
             transition: "transform 0.2s ease-out",
             "&:hover": {
@@ -31,14 +40,22 @@ export const ActivityCard: React.FC<{
             <div style={{ border: "black" }}>
               <Favorite />
               <div>
-                lat: {activity.start_ll ? activity.start_ll.lat : "not known"}
+                lat:
+                {activity.start_latlng
+                  ? Math.round(
+                      (activity.start_latlng[0] + Number.EPSILON) * 100
+                    ) / 100
+                  : "not known"}
               </div>
               <div>
-                lng: {activity.start_ll ? activity.start_ll.lng : "not known"}
+                lng:
+                {activity.start_latlng
+                  ? Math.round(
+                      (activity.start_latlng[1] + Number.EPSILON) * 100
+                    ) / 100
+                  : "not known"}
               </div>
-              {activity.average_heartrate}
-
-              <div>{activity.distance}</div>
+              {activity.average_heartrate}s<div>{activity.distance}</div>
             </div>
           </div>
         </Card>

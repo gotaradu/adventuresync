@@ -4,27 +4,31 @@ import { Drawer } from "@mui/material";
 import { useMap } from "react-leaflet";
 import DrawedActivity from "../models/DrawedActivity";
 import { ActivityCard } from "./ActivityCard";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../context/store";
+import { v4 as uuidv4 } from "uuid";
 const ActivitiesDrawer: React.FC<{
-  activities: DrawedActivity[];
   setColor: (index: number | null) => void;
-}> = ({ activities, setColor }) => {
+}> = ({ setColor }) => {
+  const { activities } = useSelector((state: RootState) => state.activities);
+
   const [open, setOpen] = useState(false);
   const toggleDrawer = () => {
     setOpen((prev) => !prev);
   };
+
   const map = useMap();
+
   const renderedCards = useMemo(() => {
     return activities.map((activity, index) => (
       <ActivityCard
-        key={`activityCard-${index}`}
+        key={uuidv4()}
         activity={activity}
         index={index}
         map={map}
-        setColor={setColor}
       />
     ));
-  }, [activities, map]);
+  }, [activities]);
 
   return (
     <>

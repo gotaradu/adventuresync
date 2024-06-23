@@ -1,44 +1,63 @@
-import * as React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import CustomContainer from "./CustomContainer";
 import Grid from "@mui/material/Grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useEffect, useState } from "react";
-import Athlete from "../models/Athlete";
-import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { gridItemProps } from "../css/home";
-import { useAuth } from "../context/AuthProvider";
-
+import Athlete from "../models/Athlete";
 import { ipAddress } from "../context/ipAddreses";
+import { EAuthState } from "../utils/types";
+import CustomButton from "./CustomButton";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../context/store";
+import { useEffect } from "react";
+import { setAuthState } from "../context/authSlice";
 
 export default function SignInSide() {
-  const {
-    athlete,
-    isLoggedIn,
-    role,
-    loading,
-    setLoggedIn,
-    setRole,
-    checkAuth,
-    setLoading,
-  } = useAuth();
+  const { authState, athlete } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    setLoading(true);
     window.location.href = `http://www.strava.com/oauth/authorize?client_id=115322&response_type=code&redirect_uri=${ipAddress}:8080/exchange_token&approval_prompt=force&scope=read_all,activity:read_all`;
   };
 
   const handleActivities = () => {
-    setLoading(true);
-    window.location.href = "/activities";
+    navigate("/activities");
+  };
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch(`${ipAddress}:8080/home`, {
+        method: "GET",
+        headers: {
+          Origin: `${ipAddress}:3000`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      if (!response.ok) {
+        dispatch(
+          setAuthState({ authState: EAuthState.Error, athlete: undefined })
+        );
+        throw new Error("error when fetching");
+      }
+      const data: Athlete = await response.json();
+      dispatch(setAuthState({ authState: EAuthState.User, athlete: data }));
+    } catch (error) {
+      console.error("Alte erori:", error);
+      dispatch(
+        setAuthState({ authState: EAuthState.Error, athlete: undefined })
+      );
+    }
   };
 
   const defaultTheme = createTheme();
 
   useEffect(() => {
-    checkAuth();
+    console.log(authState);
+    if (authState !== EAuthState.User) checkAuth();
   }, []);
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container>
@@ -57,7 +76,7 @@ export default function SignInSide() {
         />
 
         {!athlete ? (
-          loading ? (
+          authState == EAuthState.Loading ? (
             <Grid {...gridItemProps}>
               <CustomContainer>
                 <CircularProgress sx={{ color: "#607274" }} />
@@ -66,41 +85,21 @@ export default function SignInSide() {
           ) : (
             <Grid {...gridItemProps}>
               <CustomContainer>
-                <Button
-                  variant="contained"
-                  onClick={handleLogin}
-                  sx={{
-                    backgroundColor: "#607274",
-                    "&:hover": {
-                      cursor: "pointer",
-                      backgroundColor: "#9E9FA5",
-                    },
-                  }}
-                >
+                <CustomButton handleOnClick={handleLogin}>
                   Login with Strava
-                </Button>
+                </CustomButton>
               </CustomContainer>
             </Grid>
           )
         ) : (
           <Grid {...gridItemProps}>
             <CustomContainer>
-              {!loading ? (
+              {authState != EAuthState.Loading ? (
                 <div style={{ textAlign: "center" }}>
                   <h1>Bun venit, {athlete.firstname}!</h1>
-                  <Button
-                    variant="contained"
-                    onClick={handleActivities}
-                    sx={{
-                      backgroundColor: "#607274",
-                      "&:hover": {
-                        cursor: "pointer",
-                        backgroundColor: "#9E9FA5",
-                      },
-                    }}
-                  >
+                  <CustomButton handleOnClick={handleActivities}>
                     Activities
-                  </Button>
+                  </CustomButton>
                 </div>
               ) : (
                 <CustomContainer>

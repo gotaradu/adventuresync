@@ -1,6 +1,7 @@
 import DrawedActivity from "../models/DrawedActivity";
 import { Map } from "leaflet";
 import Athlete from "../models/Athlete";
+
 export type SelectedActivityContextType = {
   selectedActivity: number | null;
   setSelectedActivity: (index: number | null) => void;
@@ -24,7 +25,7 @@ export type CustomMarkersType = {
   setColor: (index: number | null) => void;
 };
 
-export interface UserContext {
+export interface IUserContext {
   athlete: Athlete | null;
   isLoggedIn: boolean;
   role: "user" | "guest";
@@ -34,4 +35,27 @@ export interface UserContext {
   checkAuth: () => void;
   setAthlete: (value: Athlete) => void;
   setLoading: (value: boolean) => void;
+}
+
+export enum EAuthState {
+  Guest,
+  User,
+  Loading,
+  Error,
+}
+export enum EActivitiesState {
+  Idle,
+  Fetched,
+  Loading,
+  Error,
+}
+export interface IAuthState {
+  authState: EAuthState;
+  athlete: Athlete | undefined;
+}
+
+export interface IActivitiesState {
+  activitiesState: EActivitiesState;
+  activities: DrawedActivity[];
+  selected: number;
 }

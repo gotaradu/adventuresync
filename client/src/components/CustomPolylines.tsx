@@ -1,11 +1,13 @@
 import { Polyline } from "react-leaflet";
 import React from "react";
 import DrawedActivity from "../models/DrawedActivity";
-
-const CustomPolylines: React.FC<{
-  activities: DrawedActivity[];
-  colorIndex: number | null;
-}> = ({ activities, colorIndex }) => {
+import { useSelector } from "react-redux";
+import { RootState } from "../context/store";
+import { v4 as uuidv4 } from "uuid";
+const CustomPolylines: React.FC<{}> = () => {
+  const { activities, selected } = useSelector(
+    (state: RootState) => state.activities
+  );
   return (
     <>
       {activities &&
@@ -15,10 +17,10 @@ const CustomPolylines: React.FC<{
             activity.pointsa &&
             activity.pointsa.length > 0 && (
               <Polyline
-                key={`polyline-${index}`}
+                key={uuidv4()}
                 pathOptions={{
-                  color: colorIndex === index ? "red" : "",
-                  opacity: colorIndex === index ? 1 : 0,
+                  color: selected === index ? "red" : "",
+                  opacity: selected === index ? 1 : 0,
                 }}
                 positions={activity.pointsa}
                 smoothFactor={10}
