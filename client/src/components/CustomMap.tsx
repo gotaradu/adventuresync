@@ -5,10 +5,10 @@ import SetViewOnClick from "./SetViewOnClick";
 import ActivitiesDrawer from "./ActivitiesDrawer";
 import CustomPolylines from "./CustomPolylines";
 import CustomMarkers from "./CustomMarkers";
+import { Legend } from "./Legend";
 
 const CustomMap: React.FC<{}> = () => {
   const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
-  const [color, setColor] = useState<number | null>(null);
 
   return (
     <MapContainer scrollWheelZoom={true}>
@@ -17,10 +17,11 @@ const CustomMap: React.FC<{}> = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <CustomMarkers setColor={setColor} />
+      <CustomMarkers />
       <CustomPolylines />
       <SetViewOnClick coords={mapCenter} />
-      <ActivitiesDrawer setColor={setColor} />
+      <ActivitiesDrawer />
+      <Legend />
     </MapContainer>
   );
 };

@@ -1,19 +1,18 @@
 import CircularProgress from "@mui/material/CircularProgress";
-import CustomContainer from "./CustomContainer";
+import CustomContainer from "../components/CustomContainer";
 import Grid from "@mui/material/Grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { gridItemProps } from "../css/home";
-import Athlete from "../models/Athlete";
 import { ipAddress } from "../context/ipAddreses";
 import { EAuthState } from "../utils/types";
-import CustomButton from "./CustomButton";
+import CustomButton from "../components/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { useEffect } from "react";
-import { setAuthState } from "../context/authSlice";
+import { checkAuth } from "../utils/auth";
 
-export default function SignInSide() {
+export default function HomePage() {
   const { authState, athlete } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -26,37 +25,10 @@ export default function SignInSide() {
     navigate("/activities");
   };
 
-  const checkAuth = async () => {
-    try {
-      const response = await fetch(`${ipAddress}:8080/home`, {
-        method: "GET",
-        headers: {
-          Origin: `${ipAddress}:3000`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      if (!response.ok) {
-        dispatch(
-          setAuthState({ authState: EAuthState.Error, athlete: undefined })
-        );
-        throw new Error("error when fetching");
-      }
-      const data: Athlete = await response.json();
-      dispatch(setAuthState({ authState: EAuthState.User, athlete: data }));
-    } catch (error) {
-      console.error("Alte erori:", error);
-      dispatch(
-        setAuthState({ authState: EAuthState.Error, athlete: undefined })
-      );
-    }
-  };
-
   const defaultTheme = createTheme();
 
   useEffect(() => {
-    console.log(authState);
-    if (authState !== EAuthState.User) checkAuth();
+    if (authState !== EAuthState.User) checkAuth(dispatch);
   }, []);
   return (
     <ThemeProvider theme={defaultTheme}>

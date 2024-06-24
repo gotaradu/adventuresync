@@ -2,14 +2,12 @@ import { useState, useMemo } from "react";
 import { Button, CardHeader, Card, List } from "@mui/material";
 import { Drawer } from "@mui/material";
 import { useMap } from "react-leaflet";
-import DrawedActivity from "../models/DrawedActivity";
+
 import { ActivityCard } from "./ActivityCard";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { v4 as uuidv4 } from "uuid";
-const ActivitiesDrawer: React.FC<{
-  setColor: (index: number | null) => void;
-}> = ({ setColor }) => {
+const ActivitiesDrawer: React.FC<{}> = () => {
   const { activities } = useSelector((state: RootState) => state.activities);
 
   const [open, setOpen] = useState(false);
