@@ -2,7 +2,6 @@ import running from "../css/running.gif";
 import cycling from "../css/cycling.gif";
 import soccer from "../css/soccer.gif";
 import defaultSport from "../css/default.gif";
-import { Popper } from "@mui/base/Popper";
 import "../css/legend.css";
 export const Legend: React.FC<{}> = () => {
   return (

@@ -8,7 +8,7 @@ import { RootState } from "../context/store";
 import { checkAuth } from "../utils/auth";
 import { fetchActivities } from "../utils/activities";
 import { useNavigate } from "react-router-dom";
-import { Legend } from "../components/Legend";
+
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
   const { authState } = useSelector((state: RootState) => state.auth);

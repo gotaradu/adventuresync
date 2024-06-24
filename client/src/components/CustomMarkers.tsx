@@ -8,10 +8,12 @@ import { RootState } from "../context/store";
 import { arrayToLatLng } from "../utils/handleMap";
 import { v4 as uuidv4 } from "uuid";
 import { setSelected } from "../context/activitiesSlice";
+
 const CustomMarkers: React.FC<{}> = () => {
   const map = useMap();
   const { activities } = useSelector((state: RootState) => state.activities);
   const dispatch = useDispatch();
+
   return (
     <>
       {activities &&
@@ -32,7 +34,7 @@ const CustomMarkers: React.FC<{}> = () => {
                     dispatch(setSelected(index));
                   },
                 }}
-              />
+              ></Marker>
             )
         )}
     </>

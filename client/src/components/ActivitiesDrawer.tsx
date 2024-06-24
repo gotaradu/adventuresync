@@ -4,9 +4,10 @@ import { Drawer } from "@mui/material";
 import { useMap } from "react-leaflet";
 
 import { ActivityCard } from "./ActivityCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { v4 as uuidv4 } from "uuid";
+import { setSelected } from "../context/activitiesSlice";
 const ActivitiesDrawer: React.FC<{}> = () => {
   const { activities } = useSelector((state: RootState) => state.activities);
 
@@ -14,7 +15,7 @@ const ActivitiesDrawer: React.FC<{}> = () => {
   const toggleDrawer = () => {
     setOpen((prev) => !prev);
   };
-
+  const dispatch = useDispatch();
   const map = useMap();
 
   const renderedCards = useMemo(() => {
@@ -27,6 +28,11 @@ const ActivitiesDrawer: React.FC<{}> = () => {
       />
     ));
   }, [activities]);
+
+  const handleHeatzone = () => {
+    dispatch(setSelected(-2));
+    toggleDrawer();
+  };
 
   return (
     <>
@@ -47,6 +53,18 @@ const ActivitiesDrawer: React.FC<{}> = () => {
         {open ? "Close Activities" : "Open Activities"}
       </Button>
       <Drawer open={open} onClose={toggleDrawer} anchor="right">
+        <Button
+          onClick={handleHeatzone}
+          sx={{
+            position: "relative",
+            margin: "3%",
+            background: "white",
+            border: "3px solid black",
+          }}
+          color="success"
+        >
+          sal
+        </Button>
         <List>
           {renderedCards}
           <Button
