@@ -37,6 +37,7 @@ export const ActivityCard: React.FC<{
             <Typography sx={{ fontSize: 18 }} gutterBottom>
               {activity.name}
             </Typography>
+
             <div style={{ border: "black" }}>
               <Favorite />
               <div>

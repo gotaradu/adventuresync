@@ -1,11 +1,11 @@
 import { setActivitiesState } from "../context/activitiesSlice";
 import { ipAddress } from "../context/ipAddreses";
 import Activity from "../models/Activity";
+import DrawedActivity from "../models/DrawedActivity";
 import decode from "./decode";
 import { EActivitiesState } from "./types";
 
 export const fetchActivities = async (dispatch: any) => {
-  console.log("called ac");
   try {
     const response = await fetch(`${ipAddress}:8080/activities`, {
       method: "GET",
@@ -29,24 +29,7 @@ export const fetchActivities = async (dispatch: any) => {
 
     const data = await response.json();
 
-    const newData = data.map((activity: Activity, index: number) => {
-      const mapExists = !!activity.map.summary_polyline;
-
-      const pointsa = mapExists
-        ? decode(activity.map.summary_polyline).map((point) => ({
-            lat: point.latitude,
-            lng: point.longitude,
-          }))
-        : [];
-
-      return {
-        index,
-        mapExists,
-        mapString: activity.map.summary_polyline,
-        pointsa,
-        ...activity,
-      };
-    });
+    const newData = handleNewData(data);
     dispatch(
       setActivitiesState({
         activitiesState: EActivitiesState.Fetched,
@@ -64,4 +47,25 @@ export const fetchActivities = async (dispatch: any) => {
     );
     console.error("Error fetching activities:", error);
   }
+};
+
+export const handleNewData = (data: any): DrawedActivity[] => {
+  return data.map((activity: Activity, index: number) => {
+    const mapExists = !!activity.map.summary_polyline;
+
+    const pointsa = mapExists
+      ? decode(activity.map.summary_polyline).map((point) => ({
+          lat: point.latitude,
+          lng: point.longitude,
+        }))
+      : [];
+
+    return {
+      index,
+      mapExists,
+      mapString: activity.map.summary_polyline,
+      pointsa,
+      ...activity,
+    };
+  });
 };

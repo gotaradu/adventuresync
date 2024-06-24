@@ -6,6 +6,7 @@ export default function CustomButton(props: any) {
       onClick={props.handleOnClick}
       sx={{
         backgroundColor: "#607274",
+        margin: "1%",
         "&:hover": {
           cursor: "pointer",
           backgroundColor: "#9E9FA5",

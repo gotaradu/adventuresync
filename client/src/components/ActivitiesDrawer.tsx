@@ -8,8 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { v4 as uuidv4 } from "uuid";
 import { setSelected } from "../context/activitiesSlice";
+import { EActivitiesState } from "../utils/types";
 const ActivitiesDrawer: React.FC<{}> = () => {
-  const { activities } = useSelector((state: RootState) => state.activities);
+  const { activities, activitiesState } = useSelector(
+    (state: RootState) => state.activities
+  );
 
   const [open, setOpen] = useState(false);
   const toggleDrawer = () => {
@@ -57,14 +60,16 @@ const ActivitiesDrawer: React.FC<{}> = () => {
           onClick={handleHeatzone}
           sx={{
             position: "relative",
-            margin: "3%",
+            zIndex: "400",
+            margin: "10px",
             background: "white",
-            border: "3px solid black",
+            border: "2px solid black",
           }}
           color="success"
         >
           View Heatzone
         </Button>
+
         <List>
           {renderedCards}
           <Button

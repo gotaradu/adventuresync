@@ -38,6 +38,7 @@ export interface IUserContext {
 }
 
 export enum EAuthState {
+  Visitor,
   Guest,
   User,
   Loading,
