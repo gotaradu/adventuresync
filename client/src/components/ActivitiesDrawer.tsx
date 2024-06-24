@@ -63,7 +63,7 @@ const ActivitiesDrawer: React.FC<{}> = () => {
           }}
           color="success"
         >
-          sal
+          View Heatzone
         </Button>
         <List>
           {renderedCards}
