@@ -1,6 +1,6 @@
 import DrawedActivity from "../models/DrawedActivity";
 import { Map } from "leaflet";
-import Athlete from "../models/Athlete";
+import { Athlete } from "../models/Athlete";
 
 export type SelectedActivityContextType = {
   selectedActivity: number | null;
@@ -41,7 +41,8 @@ export enum EAuthState {
   Visitor,
   Guest,
   User,
-  Loading,
+  Forbidden,
+  Unauthorized,
   Error,
 }
 export enum EActivitiesState {
@@ -53,6 +54,7 @@ export enum EActivitiesState {
 export interface IAuthState {
   authState: EAuthState;
   athlete: Athlete | undefined;
+  message: string;
 }
 
 export interface IActivitiesState {

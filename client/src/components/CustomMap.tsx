@@ -7,9 +7,9 @@ import CustomPolylines from "./CustomPolylines";
 import CustomMarkers from "./CustomMarkers";
 import { Legend } from "./Legend";
 
-const CustomMap: React.FC<{}> = () => {
+const CustomMap: React.FC = () => {
   const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
-
+  console.log("a");
   return (
     <MapContainer scrollWheelZoom={true}>
       <TileLayer

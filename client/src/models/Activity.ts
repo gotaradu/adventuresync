@@ -1,13 +1,10 @@
-import { LatLng } from "leaflet";
-
 export default interface Activity {
   name: string;
   map: {
-    id: string;
     summary_polyline: string;
-    resource_state: number;
   };
   distance: number;
+  average_speed: number;
   sport_type: string;
   start_date: Date;
   location_city: string;

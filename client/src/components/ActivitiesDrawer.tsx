@@ -9,7 +9,7 @@ import { RootState } from "../context/store";
 import { v4 as uuidv4 } from "uuid";
 import { setSelected } from "../context/activitiesSlice";
 import { EActivitiesState } from "../utils/types";
-const ActivitiesDrawer: React.FC<{}> = () => {
+const ActivitiesDrawer: React.FC = () => {
   const { activities, activitiesState } = useSelector(
     (state: RootState) => state.activities
   );

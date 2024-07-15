@@ -1,12 +1,9 @@
-// authUtils.ts
-
-import { ipAddress } from "../context/ipAddreses";
+import { ipAddress } from "../context/config/ipAddreses";
 import { EAuthState } from "../utils/types";
-import Athlete from "../models/Athlete";
+import { ApiResp } from "../models/Athlete";
 import { setAuthState } from "../context/authSlice";
 
 export const checkAuth = async (dispatch: any) => {
-  console.log("called");
   try {
     const response = await fetch(`${ipAddress}:8080/home`, {
       method: "GET",
@@ -16,16 +13,48 @@ export const checkAuth = async (dispatch: any) => {
       },
       credentials: "include",
     });
-    if (!response.ok) {
+
+    if (response.ok) {
+      const data: ApiResp = await response.json();
       dispatch(
-        setAuthState({ authState: EAuthState.Error, athlete: undefined })
+        setAuthState({
+          authState: EAuthState.User,
+          athlete: data.data,
+          message: "Authenticated",
+        })
       );
-      throw new Error("error when fetching");
-    }
-    const data: Athlete = await response.json();
-    dispatch(setAuthState({ authState: EAuthState.User, athlete: data }));
+    } else if (response.status === 403)
+      dispatch(
+        setAuthState({
+          authState: EAuthState.Forbidden,
+          athlete: undefined,
+          message: "Forbidden",
+        })
+      );
+    else if (response.status === 400)
+      dispatch(
+        setAuthState({
+          authState: EAuthState.Unauthorized,
+          athlete: undefined,
+          message: "Unauthorized",
+        })
+      );
+    else
+      dispatch(
+        setAuthState({
+          authState: EAuthState.Guest,
+          athlete: undefined,
+          message: "Guest",
+        })
+      );
   } catch (error) {
-    console.error("Alte erori:", error);
-    dispatch(setAuthState({ authState: EAuthState.Error, athlete: undefined }));
+    console.log(error);
+    dispatch(
+      setAuthState({
+        authState: EAuthState.Error,
+        athlete: undefined,
+        message: "Error on the server",
+      })
+    );
   }
 };

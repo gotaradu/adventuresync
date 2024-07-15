@@ -7,7 +7,7 @@ interface GridItemProps {
   container?: boolean;
   justifyContent?: string;
   alignItems?: string;
-  backgroundColor?: String;
+  backgroundColor?: string;
 }
 const gridItemProps: GridItemProps = {
   item: true,

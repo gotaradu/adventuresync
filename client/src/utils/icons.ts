@@ -1,7 +1,8 @@
-import running from "../css/running.gif";
-import cycling from "../css/cycling.gif";
-import soccer from "../css/soccer.gif";
-import defaultSport from "../css/default.gif";
+import running from "../css/images/running.gif";
+import cycling from "../css/images/cycling.gif";
+import soccer from "../css/images/soccer.gif";
+import hiking from "../css/images/hiking.png";
+import defaultSport from "../css/images/default.gif";
 
 import L from "leaflet";
 
@@ -22,6 +23,11 @@ const soccerIcon = L.icon({
   iconSize: [42, 42],
   iconAnchor: [16, 32],
 });
+const hikingIcon = L.icon({
+  iconUrl: hiking,
+  iconSize: [42, 42],
+  iconAnchor: [16, 32],
+});
 const defaultIcon = L.icon({
   iconUrl: defaultSport,
   iconSize: [42, 42],
@@ -35,7 +41,9 @@ const icon = (sport_type: string) => {
     ? cyclingIcon
     : sport_type === "Soccer"
     ? soccerIcon
+    : sport_type === "Hike"
+    ? hikingIcon
     : defaultIcon;
 };
 
-export { runningIcon, cyclingIcon, soccerIcon, defaultIcon, icon };
+export { runningIcon, cyclingIcon, soccerIcon, hikingIcon, defaultIcon, icon };

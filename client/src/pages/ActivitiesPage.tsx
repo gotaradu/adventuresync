@@ -6,7 +6,11 @@ import { EActivitiesState, EAuthState } from "../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { checkAuth } from "../utils/auth";
-import { fetchActivities, handleNewData } from "../utils/activities";
+import {
+  fetchActivities,
+  handleNewData,
+  getAllActivities,
+} from "../utils/activities";
 import { useNavigate } from "react-router-dom";
 import { setActivitiesState } from "../context/activitiesSlice";
 import { mockActivities } from "../utils/mockData";
@@ -19,17 +23,21 @@ export const ActivitiesPage: React.FC = () => {
   );
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(authState);
-    if (authState !== EAuthState.Visitor && !localStorage.getItem("visitor")) {
-      console.log("blabla");
-
-      if (authState === EAuthState.Guest) {
-        checkAuth(dispatch);
-      } else if (activitiesState !== EActivitiesState.Fetched) {
-        fetchActivities(dispatch);
+  const handleOnRender = async () => {
+    if (
+      authState === EAuthState.Error ||
+      activitiesState === EActivitiesState.Error ||
+      authState === EAuthState.Forbidden ||
+      authState === EAuthState.Unauthorized
+    )
+      navigate("/");
+    if (authState === EAuthState.User) {
+      if (activitiesState !== EActivitiesState.Fetched) {
+        await getAllActivities(dispatch);
       }
-    } else {
+      return;
+    }
+    if (authState === EAuthState.Visitor && localStorage.getItem("visitor")) {
       dispatch(
         setActivitiesState({
           activitiesState: EActivitiesState.Fetched,
@@ -37,20 +45,23 @@ export const ActivitiesPage: React.FC = () => {
           selected: -1,
         })
       );
+      return;
     }
-  }, [authState, activitiesState]);
+    if (authState === EAuthState.Guest) {
+      await checkAuth(dispatch);
+      return;
+    }
+  };
+  useEffect(() => {
+    handleOnRender();
+  }, [authState, activitiesState, checkAuth, fetchActivities]);
 
   const render = () => {
-    if (authState === EAuthState.Error) {
-      navigate("/");
-    }
     if (
-      (authState === EAuthState.Guest &&
-        activitiesState === EActivitiesState.Idle) ||
       (authState === EAuthState.User &&
         activitiesState === EActivitiesState.Fetched) ||
-      authState === EAuthState.Visitor ||
-      (localStorage.getItem("visitor") &&
+      (authState === EAuthState.Visitor &&
+        localStorage.getItem("visitor") &&
         activitiesState === EActivitiesState.Fetched)
     )
       return <CustomMap />;

@@ -1,4 +1,4 @@
-interface Athlete {
+export interface Athlete {
   id: string;
   country: string;
   sex: string;
@@ -6,4 +6,8 @@ interface Athlete {
   firstname: string;
   lastname: string;
 }
-export default Athlete;
+
+export interface ApiResp {
+  data: Athlete;
+  message: string;
+}
