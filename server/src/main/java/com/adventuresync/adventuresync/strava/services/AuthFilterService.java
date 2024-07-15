@@ -1,12 +1,12 @@
 package com.adventuresync.adventuresync.strava.services;
 
-import com.adventuresync.adventuresync.strava.dao.DataForAccessDAOImpl;
+import com.adventuresync.adventuresync.strava.dao.impl.DataForAccessDAOImpl;
 import com.adventuresync.adventuresync.strava.exceptions.CookieException;
 import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,6 +15,7 @@ import java.util.Optional;
 @Service
 public class AuthFilterService implements Filter {
 
+    private String ipAddress;
     private final CookieService cookieService;
     private final TokenService tokenService;
 
@@ -22,12 +23,19 @@ public class AuthFilterService implements Filter {
 
     private final StravaLoginService stravaLoginService;
 
-    @Autowired
-    public AuthFilterService(CookieService cookieService, TokenService tokenService, DataForAccessDAOImpl dataForAccessDAO, StravaLoginService stravaLoginService) {
+    public AuthFilterService(@Value("${server.address}") String ipAddress, CookieService cookieService, TokenService tokenService, DataForAccessDAOImpl dataForAccessDAO, StravaLoginService stravaLoginService) {
+        this.ipAddress = ipAddress;
         this.cookieService = cookieService;
         this.tokenService = tokenService;
         this.dataForAccessDAO = dataForAccessDAO;
         this.stravaLoginService = stravaLoginService;
+    }
+
+    public void setHeaders(HttpServletResponse httpResponse) {
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://" + ipAddress + ":3000");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
     }
 
     @Override
@@ -35,10 +43,7 @@ public class AuthFilterService implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
-            httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.147:3000");
-            httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+            setHeaders(httpResponse);
             return;
         }
         if (!httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities")) {
@@ -48,10 +53,7 @@ public class AuthFilterService implements Filter {
         try {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
-                httpResponse.setHeader("Access-Control-Allow-Origin", "http://192.168.1.147:3000");
-                httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+                setHeaders(httpResponse);
                 if (!tokenService.isExpiredJwt(jwt.get())) {
 
                     System.out.println("Intra aici");
@@ -64,10 +66,13 @@ public class AuthFilterService implements Filter {
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
             } else {
+                System.out.println("Intra aici 3");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (DataForAccessException | CookieException e) {
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            System.out.println("Intra aici 4");
+            setHeaders(httpResponse);
+            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 

@@ -1,6 +1,7 @@
-package com.adventuresync.adventuresync.strava.dao;
+package com.adventuresync.adventuresync.strava.dao.impl;
 
 
+import com.adventuresync.adventuresync.strava.dao.SummaryAthleteDAO;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import jakarta.persistence.EntityManager;
 
@@ -33,9 +34,7 @@ public class SummaryAthleteDAOImpl implements SummaryAthleteDAO {
     @Override
     @Transactional
     public void update(SummaryAthlete summaryAthlete) {
-        SummaryAthlete s = entityManager.find(SummaryAthlete.class, summaryAthlete.getId());
-        System.out.println(s);
+        entityManager.find(SummaryAthlete.class, summaryAthlete.getId());
         entityManager.merge(summaryAthlete);
-        System.out.println(summaryAthlete);
     }
 }

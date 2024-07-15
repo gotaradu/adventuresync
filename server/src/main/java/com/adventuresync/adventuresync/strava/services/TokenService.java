@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -27,7 +26,7 @@ public class TokenService {
 
     private final DataForAccessService dataForAccessService;
 
-    @Autowired
+
     public TokenService(RestTemplate restTemplate, StravaToken stravaToken, DataForAccessService dataForAccessService) {
         this.restTemplate = restTemplate;
         this.stravaToken = stravaToken;

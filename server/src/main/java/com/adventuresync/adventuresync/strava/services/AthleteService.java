@@ -1,13 +1,12 @@
 package com.adventuresync.adventuresync.strava.services;
 
-import com.adventuresync.adventuresync.strava.dao.SummaryAthleteDAOImpl;
+import com.adventuresync.adventuresync.strava.dao.impl.SummaryAthleteDAOImpl;
 import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
 import com.adventuresync.adventuresync.strava.exceptions.SummaryAthleteException;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

@@ -1,5 +1,6 @@
-package com.adventuresync.adventuresync.strava.dao;
+package com.adventuresync.adventuresync.strava.dao.impl;
 
+import com.adventuresync.adventuresync.strava.dao.RouteDAO;
 import com.adventuresync.adventuresync.strava.model.Route;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;

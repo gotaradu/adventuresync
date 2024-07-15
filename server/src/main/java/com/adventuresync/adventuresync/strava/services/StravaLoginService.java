@@ -4,10 +4,8 @@ import com.adventuresync.adventuresync.strava.exceptions.*;
 import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,12 +18,14 @@ import java.util.Optional;
 @Service
 public class StravaLoginService {
 
+    @Value("${server.address}")
+    private String ipAddress;
+
     private final DataForAccessService dataForAccessService;
     private final TokenService tokenService;
     private final CookieService cookieService;
     private final AthleteService athleteService;
 
-    @Autowired
     public StravaLoginService(DataForAccessService dataForAccessService, TokenService tokenService, CookieService cookieService, AthleteService athleteService) {
         this.dataForAccessService = dataForAccessService;
         this.tokenService = tokenService;
@@ -38,10 +38,10 @@ public class StravaLoginService {
             DataForAccess dataForAccess = tokenService.getDataForAccess(code, scope);
             dataForAccessService.persistDataForAccess(dataForAccess);
             cookieService.attachCookieToResponse(response, true, dataForAccess.getJwtToken());
-            String redirectUrl = "http://192.168.1.147:3000";
+            String redirectUrl = "http://" + ipAddress + ":3000";
             return new RedirectView(redirectUrl);
         } catch (DataForAccessException e) {
-            return new RedirectView("http://192.168.1.147:3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
+            return new RedirectView("http://" + ipAddress + ":3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
         }
     }
 

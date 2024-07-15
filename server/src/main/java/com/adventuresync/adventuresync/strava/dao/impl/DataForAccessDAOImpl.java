@@ -1,5 +1,6 @@
-package com.adventuresync.adventuresync.strava.dao;
+package com.adventuresync.adventuresync.strava.dao.impl;
 
+import com.adventuresync.adventuresync.strava.dao.DataForAccessDAO;
 import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
 import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
 import com.adventuresync.adventuresync.strava.model.DataForAccess;
@@ -7,8 +8,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
