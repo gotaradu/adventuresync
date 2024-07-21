@@ -54,6 +54,7 @@ public class AuthFilterService implements Filter {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
                 setHeaders(httpResponse);
+                System.out.println(jwt.get() + " asta se primeste in filtru");
                 if (!tokenService.isExpiredJwt(jwt.get())) {
 
                     System.out.println("Intra aici");

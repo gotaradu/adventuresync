@@ -27,7 +27,7 @@ public enum ErrorCode {
 
     ERR0104("Jwt key is invalid"),
     ERR0105("Error in communicating with external Strava service"),
-
+    ERR0106("Jwt is null"),
 
     // Athlete
 

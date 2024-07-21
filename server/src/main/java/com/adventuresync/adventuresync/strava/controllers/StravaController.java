@@ -1,6 +1,7 @@
 package com.adventuresync.adventuresync.strava.controllers;
 
 import com.adventuresync.adventuresync.strava.model.Activity;
+import com.adventuresync.adventuresync.strava.model.ApiActivity;
 import com.adventuresync.adventuresync.strava.services.StravaActivitiesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;

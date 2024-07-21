@@ -39,5 +39,7 @@ public class CookieService {
         cookie.setMaxAge(60 * 60 * 24);
         if (httpSecured) cookie.setHttpOnly(true);
         response.addCookie(cookie);
+        System.out.println(cookie.getName() + " cookie name");
+        System.out.println(cookie.getValue() + " cookie value");
     }
 }

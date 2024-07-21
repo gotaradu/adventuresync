@@ -67,21 +67,24 @@ public class TokenService {
         return jwt.getAthleteId();
     }
 
-    private Data checkJwt(String token) {
-        try {
-            Jws<Claims> data = Jwts.parser().
-                    verifyWith(Keys.hmacShaKeyFor(System.getenv("SECRET_KEY").
-                            getBytes())).
-                    build().
-                    parseSignedClaims(token);
-            return new Data(data.getPayload().getSubject(), data.getPayload().getExpiration());
-        } catch (ExpiredJwtException e) {
-            return new Data(e.getClaims().getSubject(), e.getClaims().getExpiration());
-        } catch (SignatureException e) {
-            throw new JwtException(ErrorCode.ERR0102, token);
-        } catch (Exception e) {
-            throw new JwtException(ErrorCode.ERR0100, token);
+    private Data checkJwt(String token) throws JwtException {
+        if (token != null) {
+            try {
+                Jws<Claims> data = Jwts.parser().
+                        verifyWith(Keys.hmacShaKeyFor(System.getenv("SECRET_KEY").
+                                getBytes())).
+                        build().
+                        parseSignedClaims(token);
+                return new Data(data.getPayload().getSubject(), data.getPayload().getExpiration());
+            } catch (ExpiredJwtException e) {
+                return new Data(e.getClaims().getSubject(), e.getClaims().getExpiration());
+            } catch (SignatureException e) {
+                throw new JwtException(ErrorCode.ERR0102, token);
+            } catch (Exception e) {
+                throw new JwtException(ErrorCode.ERR0100, token);
+            }
         }
+        throw new JwtException(ErrorCode.ERR0106, null);
     }
 
     public DataForAccess getDataForRefresh(String refreshToken, String athleteId) {

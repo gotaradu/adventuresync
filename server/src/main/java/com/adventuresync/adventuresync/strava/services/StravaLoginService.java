@@ -49,11 +49,12 @@ public class StravaLoginService {
 
         try {
             String athleteId = tokenService.getAthleteIdFromJwt(jwt);
-            System.out.println(athleteId);
+            System.out.println(athleteId + " athlete from old jwt");
             DataForAccess data = dataForAccessService.getDataFromToken(jwt); // cauta in database sa vedem daca exista data pt jwt primit
             System.out.println(data + " data from database");
             // daca exista, facem un req la strava cu refresh tokenul
             DataForAccess newData = tokenService.getDataForRefresh(data.getRefreshToken(), athleteId);// ddata returned from strava
+            System.out.println(data.getRefreshToken() + " asta e refresh token");
             //aici nu se trimite athlete
             System.out.println(newData + " this is new data");
             SummaryAthlete athlete = athleteService.getAthleteById(athleteId);
@@ -82,7 +83,7 @@ public class StravaLoginService {
             cookieService.attachCookieToResponse(httpResponse, true, data.getJwtToken());
             sendResponse(httpResponse, HttpStatus.OK, data.getSummaryAthlete());
         } catch (Exception e) {
-            httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            sendResponse(httpResponse, HttpStatus.valueOf(HttpServletResponse.SC_INTERNAL_SERVER_ERROR), e);
         }
     }
 
@@ -90,11 +91,13 @@ public class StravaLoginService {
         httpResponse.setStatus(status.value());
         httpResponse.setContentType("application/json");
         ObjectMapper objectMapper = new ObjectMapper();
-        String responseJson = objectMapper.writeValueAsString(responseBody);
-        System.out.println(responseJson);
-        PrintWriter out = httpResponse.getWriter();
-        out.print(responseJson);
-        out.flush();
+        if (responseBody != null) {
+            String responseJson = objectMapper.writeValueAsString(responseBody);
+            System.out.println(responseJson + " asta se trimite ca response");
+            PrintWriter out = httpResponse.getWriter();
+            out.print(responseJson);
+            out.flush();
+        }
     }
 
 }
