@@ -1,20 +1,17 @@
 export default interface Activity {
+  id: string;
+  athleteId: string;
   name: string;
-  map: {
-    summary_polyline: string;
-  };
+  map: string,
   distance: number;
-  average_speed: number;
-  sport_type: string;
-  start_date: Date;
-  location_city: string;
-  location_country: string;
-  average_heartrate: number;
-  max_heartrate: number;
-  moving_time: number;
-  elapsed_time: number;
-  total_elevation_gain: number;
-  elev_high: number;
-  elev_low: number;
-  start_latlng: number[];
+  averageSpeed: number;
+  sportType: string;
+  startDate: Date;
+  averageHeartRate: number;
+  maxHeartRate: number;
+  elapsedTime: number;
+  totalElevationGain: number;
+  elevHigh: number;
+  elevLow: number;
+  startLatLng: number[];
 }

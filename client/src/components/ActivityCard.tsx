@@ -12,17 +12,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { Map } from "leaflet";
 import { RootState } from "../context/store";
 import { setSelected } from "../context/activitiesSlice";
+import { MutableRefObject } from "react";
+import { useNavigate } from "react-router-dom";
 export const ActivityCard: React.FC<{
   activity: DrawedActivity;
   index: number;
   map: Map;
-}> = ({ activity, index, map }) => {
+  popupRef: MutableRefObject<L.Popup | null>;
+  path: string;
+  onClick: () => void;
+}> = ({ activity, index, map, popupRef, path, onClick }) => {
   const { selected } = useSelector((state: RootState) => state.activities);
   const dispatch = useDispatch();
-
-  const handleClick = () => {
-    mapZoomHandler(activity, map);
+  const navigate = useNavigate();
+  const handleClick = async () => {
+    console.log(activity);
+    onClick();
+    await mapZoomHandler(activity, map, popupRef);
     dispatch(setSelected(index));
+    const element = popupRef.current?.getElement();
+    if (element) {
+      const button = element.querySelector<HTMLButtonElement>(".popup-button");
+      if (button) {
+        button.onclick = () => {
+          navigate(`/${path}/${activity.id}`);
+        };
+      }
+    }
   };
 
   return (
@@ -47,38 +63,26 @@ export const ActivityCard: React.FC<{
             ) : null}
 
             <div style={{ border: "black" }}>
-              {activity.average_heartrate ? (
+              {activity.averageHeartRate ? (
                 <div>
                   <Favorite sx={{ fontSize: 15 }} />
-                  {activity.average_heartrate}
+                  {activity.averageHeartRate}
                 </div>
               ) : null}
 
-              {activity.elapsed_time ? (
+              {activity.elapsedTime ? (
                 <div>
                   <TimerIcon sx={{ fontSize: 15 }} />
-                  <span>
-                    {(Math.floor(activity.elapsed_time / 3600) < 10
-                      ? "0" + Math.floor(activity.elapsed_time / 3600)
-                      : Math.floor(activity.elapsed_time / 3600)) +
-                      ":" +
-                      (Math.floor((activity.elapsed_time % 3600) / 60) < 10
-                        ? "0" + Math.floor((activity.elapsed_time % 3600) / 60)
-                        : Math.floor((activity.elapsed_time % 3600) / 60)) +
-                      ":" +
-                      (Math.floor(activity.elapsed_time % 60) < 10
-                        ? "0" + Math.floor(activity.elapsed_time % 60)
-                        : Math.floor(activity.elapsed_time % 60))}
-                  </span>
+                  <span>{activity.elapsedTime}</span>
                 </div>
               ) : null}
-              {activity.start_latlng.length > 0 ? (
+              {activity.startLatLng.length > 0 ? (
                 <div>
                   <div>
                     <PublicIcon sx={{ fontSize: 15 }} />
                     {"lat:" +
                       Math.round(
-                        (activity.start_latlng[0] + Number.EPSILON) * 100
+                        (activity.startLatLng[0] + Number.EPSILON) * 100
                       ) /
                         100}
                   </div>
@@ -87,7 +91,7 @@ export const ActivityCard: React.FC<{
                     <PublicIcon sx={{ fontSize: 15 }} />
                     {"lng:" +
                       Math.round(
-                        (activity.start_latlng[1] + Number.EPSILON) * 100
+                        (activity.startLatLng[1] + Number.EPSILON) * 100
                       ) /
                         100}
                   </div>
@@ -97,31 +101,25 @@ export const ActivityCard: React.FC<{
               {activity.distance > 0 ? (
                 <div>
                   <DirectionsRunIcon sx={{ fontSize: 15 }} />
-                  {(activity.distance / 1000).toFixed(2) + " km"}
+                  {activity.distance + " km"}
                 </div>
               ) : null}
-              {activity.total_elevation_gain ? (
+              {activity.totalElevationGain ? (
                 <div>
                   <LandscapeIcon sx={{ fontSize: 15 }} />
-                  {activity.total_elevation_gain + " m"}
+                  {activity.totalElevationGain + " m"}
                 </div>
               ) : null}
-              {activity.distance && activity.elapsed_time ? (
+              {activity.distance && activity.elapsedTime ? (
                 <div>
                   <RocketIcon sx={{ fontSize: 15 }} />
-                  {Math.floor(
-                    activity.elapsed_time / (activity.distance / 1000) / 60
-                  ) +
-                    ":" +
-                    Math.floor(
-                      (activity.elapsed_time / (activity.distance / 1000)) % 60
-                    )}
+                  {activity.averageSpeed}
                 </div>
               ) : null}
-              {activity.start_date ? (
+              {activity.startDate ? (
                 <div>
                   <CalendarMonthIcon sx={{ fontSize: 15 }} />
-                  {new Date(activity.start_date).toDateString()}
+                  {new Date(activity.startDate).toDateString()}
                 </div>
               ) : null}
             </div>

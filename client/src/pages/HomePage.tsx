@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { checkAuth } from "../utils/auth";
 import { setAuthState } from "../context/authSlice";
 
-export default function HomePage() {
+export const HomePage: React.FC = () => {
   const { authState, athlete } = useSelector((state: RootState) => state.auth);
   const [isChecking, setIsChecking] = useState(true);
   const dispatch = useDispatch();
@@ -34,11 +34,14 @@ export default function HomePage() {
         message: "",
       })
     );
-    navigate("/activities");
+    navigate("/activities-mock");
   };
 
-  const handleActivities = () => {
-    navigate("/activities");
+  const handleButton = (path: string) => {
+    navigate(path);
+  };
+  const handleLogout = () => {
+    navigate("/");
   };
 
   const defaultTheme = createTheme();
@@ -47,7 +50,7 @@ export default function HomePage() {
     console.log("called");
     const timeoutId = setTimeout(() => {
       setIsChecking(false);
-    }, 100);
+    }, 300);
 
     if (authState !== EAuthState.User && authState !== EAuthState.Visitor) {
       checkAuth(dispatch);
@@ -69,9 +72,13 @@ export default function HomePage() {
           <CustomContainer>
             <div style={{ textAlign: "center" }}>
               <h1>Bun venit, {athlete.firstname}!</h1>
-              <CustomButton handleOnClick={handleActivities}>
+              <CustomButton handleOnClick={() => handleButton("/activities")}>
                 Activities
               </CustomButton>
+              <CustomButton handleOnClick={() => handleButton("/stats")}>
+                Stats
+              </CustomButton>
+              <CustomButton handleOnClick={handleLogout}>Logout</CustomButton>
             </div>
           </CustomContainer>
         </Grid>
@@ -113,44 +120,6 @@ export default function HomePage() {
             }}
           />
 
-          {/* {!athlete && authState === EAuthState.Loading && (
-            <Grid {...gridItemProps}>
-              <CustomContainer>
-                <CircularProgress sx={{ color: "#607274" }} />
-              </CustomContainer>
-            </Grid>
-          )}
-
-          {athlete && authState === EAuthState.User && (
-            <Grid {...gridItemProps}>
-              <CustomContainer>
-                <div style={{ textAlign: "center" }}>
-                  <h1>Bun venit, {athlete.firstname}!</h1>
-                  <CustomButton handleOnClick={handleActivities}>
-                    Activities
-                  </CustomButton>
-                </div>
-              </CustomContainer>
-            </Grid>
-          )}
-
-          {!athlete && authState === EAuthState.Error && <Error />}
-
-          {(authState === EAuthState.Guest ||
-            authState === EAuthState.Forbidden ||
-            authState === EAuthState.Unauthorized ||
-            authState === EAuthState.Visitor) && (
-            <Grid {...gridItemProps}>
-              <CustomContainer>
-                <CustomButton handleOnClick={handleLogin}>
-                  Login with Strava
-                </CustomButton>
-                <CustomButton handleOnClick={handleMock}>
-                  with Custom data
-                </CustomButton>
-              </CustomContainer>
-            </Grid>
-          )} */}
           {handleView()}
         </Grid>
       </ThemeProvider>
@@ -158,4 +127,4 @@ export default function HomePage() {
   };
 
   return renderPage();
-}
+};

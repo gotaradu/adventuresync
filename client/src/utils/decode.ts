@@ -3,7 +3,7 @@ export default function decode(encoded: string) {
   //console.log(encoded);
   const points = [];
   let index = 0;
-  const len = encoded.length;
+  const len = encoded?.length || 0;
   let lat = 0,
     lng = 0;
   while (index < len) {

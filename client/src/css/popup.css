@@ -1,0 +1,50 @@
+/* Stil pentru containerul popup */
+.popup-container {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Stil pentru titlu */
+  .popup-container h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.25em;
+  }
+  
+  /* Stil pentru locație și alte paragrafe */
+  .popup-container p {
+    margin: 8px 0;
+    color: #666;
+  }
+  
+  /* Stil pentru ID */
+  .popup-container div {
+    margin: 8px 0;
+    color: #999;
+    font-size: 0.9em;
+  }
+  
+  /* Stil pentru buton */
+  .popup-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #607274;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 12px;
+  }
+  
+  .popup-button:hover {
+    background-color: #9E9FA5;
+  }
+  

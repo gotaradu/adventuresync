@@ -5,44 +5,74 @@ import DrawedActivity from "../models/DrawedActivity";
 import decode from "./decode";
 import { EActivitiesState } from "./types";
 
+const transformDistance = (distance: number) => parseFloat((distance / 1000).toFixed(2));
+
+const transformTime = (time: number) => {
+  return (
+    (Math.floor(time / 3600) < 10
+      ? "0" + Math.floor(time / 3600)
+      : Math.floor(time / 3600)) +
+    ":" +
+    (Math.floor((time % 3600) / 60) < 10
+      ? "0" + Math.floor((time % 3600) / 60)
+      : Math.floor((time % 3600) / 60)) +
+    ":" +
+    (Math.floor(time % 60) < 10
+      ? "0" + Math.floor(time % 60)
+      : Math.floor(time % 60))
+  );
+};
+
+const transformPace = (speed: number) => {
+  if (speed > 0)
+    return (
+      (Math.floor(((1000 / speed) % 3600) / 60) < 10
+        ? "0" + Math.floor(((1000 / speed) % 3600) / 60)
+        : Math.floor(((1000 / speed) % 3600) / 60)) +
+      ":" +
+      (Math.floor((1000 / speed) % 60) < 10
+        ? "0" + Math.floor((1000 / speed) % 60)
+        : Math.floor((1000 / speed) % 60))
+    )
+  else return ""
+};
+
 export const handleNewData = (data: any): DrawedActivity[] => {
   return data.map((activity: Activity, index: number) => {
-    const mapExists = !!activity.map.summary_polyline;
-
+    const mapExists = !!activity.map;
     const pointsa = mapExists
-      ? decode(activity.map.summary_polyline).map((point) => ({
-          lat: point.latitude,
-          lng: point.longitude,
-        }))
+      ? decode(activity.map).map((point) => ({
+        lat: point.latitude,
+        lng: point.longitude,
+      }))
       : [];
 
     return {
+      id: activity.id,
+      athleteId: activity.athleteId,
       index,
       name: activity.name,
       mapExists,
-      mapString: activity.map.summary_polyline,
+      mapString: activity.map,
       pointsa,
-      distance: activity.distance,
-      average_speed: activity.average_speed,
-      sport_type: activity.sport_type,
-      start_date: activity.start_date,
-      location_country: activity.location_country,
-      average_heartrate: activity.average_heartrate,
-      max_heartrate: activity.max_heartrate,
-      moving_time: activity.moving_time,
-      elapsed_time: activity.elapsed_time,
-      total_elevation_gain: activity.total_elevation_gain,
-      elev_high: activity.elev_high,
-      elev_low: activity.elev_low,
-      start_latlng: activity.start_latlng,
+      distance: transformDistance(activity.distance),
+      averageSpeed: transformPace(activity.averageSpeed),
+      sportType: activity.sportType,
+      startDate: activity.startDate,
+      averageHeartRate: activity.averageHeartRate,
+      maxHeartRate: activity.maxHeartRate,
+      elapsedTime: transformTime(activity.elapsedTime),
+      totalElevationGain: activity.totalElevationGain,
+      elevHigh: activity.elevHigh,
+      elevLow: activity.elevLow,
+      startLatLng: activity.startLatLng,
     };
   });
 };
 
 export const fetchActivities = async (dispatch: any, page = 1) => {
-  console.log(page);
   try {
-    console.log(`Fetching page ${page} with 30 activities per page`);
+
     const response = await fetch(`${ipAddress}:8080/activities?page=${page}`, {
       method: "GET",
       headers: {
@@ -64,6 +94,7 @@ export const fetchActivities = async (dispatch: any, page = 1) => {
     }
 
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     dispatch(
@@ -89,7 +120,6 @@ export const getAllActivities = async (dispatch: any) => {
 
     const newActivities = handleNewData(activities);
 
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
     allActivities = [...allActivities, ...newActivities];
 
     dispatch(

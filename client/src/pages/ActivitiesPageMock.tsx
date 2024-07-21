@@ -5,11 +5,11 @@ import React, { useEffect } from "react";
 import { EActivitiesState, EAuthState } from "../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
-import { checkAuth } from "../utils/auth";
-import { fetchActivities, getAllActivities } from "../utils/activities";
-import { useNavigate } from "react-router-dom";
 
-export const ActivitiesPage: React.FC = () => {
+import { useNavigate } from "react-router-dom";
+import { handleOnRender } from "../utils/visitor";
+
+export const ActivitiesPageMock: React.FC = () => {
   const navigate = useNavigate();
   const { authState } = useSelector((state: RootState) => state.auth);
   const { activitiesState } = useSelector(
@@ -17,36 +17,17 @@ export const ActivitiesPage: React.FC = () => {
   );
   const dispatch = useDispatch();
 
-  const handleOnRender = async () => {
-    if (
-      authState === EAuthState.Error ||
-      activitiesState === EActivitiesState.Error ||
-      authState === EAuthState.Forbidden ||
-      authState === EAuthState.Unauthorized
-    )
-      navigate("/");
-    if (authState === EAuthState.User) {
-      if (activitiesState !== EActivitiesState.Fetched) {
-        await getAllActivities(dispatch);
-      }
-      return;
-    }
-
-    if (authState === EAuthState.Guest) {
-      await checkAuth(dispatch);
-      return;
-    }
-  };
   useEffect(() => {
-    handleOnRender();
-  }, [authState, activitiesState, checkAuth, fetchActivities]);
+    handleOnRender(dispatch, navigate);
+  }, [authState, activitiesState]);
 
   const render = () => {
     if (
-      authState === EAuthState.User &&
+      authState === EAuthState.Visitor &&
+      localStorage.getItem("visitor") &&
       activitiesState === EActivitiesState.Fetched
     )
-      return <CustomMap path="stats" />;
+      return <CustomMap path="stats-mock" />;
     else
       return (
         <CenteredContent>
@@ -57,5 +38,3 @@ export const ActivitiesPage: React.FC = () => {
 
   return render();
 };
-
-export default ActivitiesPage;

@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer } from "react-leaflet";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { LatLng } from "leaflet";
 import SetViewOnClick from "./SetViewOnClick";
 import ActivitiesDrawer from "./ActivitiesDrawer";
@@ -7,9 +7,10 @@ import CustomPolylines from "./CustomPolylines";
 import CustomMarkers from "./CustomMarkers";
 import { Legend } from "./Legend";
 
-const CustomMap: React.FC = () => {
-  const [mapCenter, setMapCenter] = useState<LatLng>(new LatLng(50, 25));
-  console.log("a");
+const CustomMap: React.FC<{ path: string }> = ({ path }) => {
+  const [mapCenter] = useState<LatLng>(new LatLng(40, -25));
+  const popupRef = useRef(null);
+
   return (
     <MapContainer scrollWheelZoom={true}>
       <TileLayer
@@ -17,10 +18,10 @@ const CustomMap: React.FC = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <CustomMarkers />
+      <CustomMarkers popupRef={popupRef} path={path} />
       <CustomPolylines />
       <SetViewOnClick coords={mapCenter} />
-      <ActivitiesDrawer />
+      <ActivitiesDrawer popupRef={popupRef} path={path} />
       <Legend />
     </MapContainer>
   );

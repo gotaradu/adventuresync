@@ -1,22 +1,22 @@
-import { LatLng, LatLngExpression } from "leaflet";
+import { LatLng } from "leaflet";
 
 export default interface DrawedActivity {
+  id: string;
+  athleteId: string;
   index: number;
   mapExists: boolean;
   mapString: string;
   name: string;
   pointsa: LatLng[];
   distance: number;
-  sport_type: string;
-  start_date: Date;
-  location_city: string;
-  location_country: string;
-  average_heartrate: number;
-  max_heartrate: number;
-  moving_time: number;
-  elapsed_time: number;
-  total_elevation_gain: number;
-  elev_high: number;
-  elev_low: number;
-  start_latlng: [number, number];
+  sportType: string;
+  startDate: Date;
+  averageHeartRate: number;
+  averageSpeed: string;
+  maxHeartRate: number;
+  elapsedTime: string;
+  totalElevationGain: number;
+  elevHigh: number;
+  elevLow: number;
+  startLatLng: [number, number];
 }

@@ -12,7 +12,6 @@ const authSlice = createSlice({
   initialState: initialAuthState,
   reducers: {
     setAuthState(state, action: PayloadAction<IAuthState>) {
-      console.log(state.authState);
       state.authState = action.payload.authState; // "mutate state" but toolkit does all the magic
       state.athlete = action.payload.athlete;
       state.message = action.payload.message;

@@ -15,7 +15,7 @@ const SetViewOnClick: React.FC<{
       };
       map.on("zoomend", onZoomEnd);
     } else {
-      map.setView(coords, 5);
+      map.setView(coords, 3);
       setFirstRender(false);
     }
   }, [coords]);
