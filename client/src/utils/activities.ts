@@ -9,6 +9,8 @@ import { ActivityState, EActivitiesState, EAuthState } from "./types";
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { checkAuth } from "./auth";
+import { mockActivities } from "./mockData";
+import { setAuthState } from "../context/authSlice";
 
 const transformDistance = (distance: number) => parseFloat((distance / 1000).toFixed(2));
 
@@ -42,7 +44,7 @@ const transformPace = (speed: number) => {
   else return ""
 };
 
-const handleNewDataLocal = (activity: Activity): DrawedActivity => {
+const handleNewDataLocal = (activity: Activity, index: number): DrawedActivity => {
   const mapExists = !!activity.map;
   const pointsa = mapExists
     ? decode(activity.map).map((point) => new LatLng(
@@ -56,7 +58,7 @@ const handleNewDataLocal = (activity: Activity): DrawedActivity => {
     athleteId: activity.athleteId,
     name: activity.name,
     mapExists,
-    index: 0,
+    index: index,
     mapString: activity.map,
     pointsa,
     distance: transformDistance(activity.distance),
@@ -73,36 +75,7 @@ const handleNewDataLocal = (activity: Activity): DrawedActivity => {
   };
 }
 export const handleNewData = (data: any): DrawedActivity[] => {
-  return data.map((activity: Activity, index: number) => {
-    const mapExists = !!activity.map;
-    const pointsa = mapExists
-      ? decode(activity.map).map((point) => ({
-        lat: point.latitude,
-        lng: point.longitude,
-      }))
-      : [];
-
-    return {
-      id: activity.id,
-      athleteId: activity.athleteId,
-      index,
-      name: activity.name,
-      mapExists,
-      mapString: activity.map,
-      pointsa,
-      distance: transformDistance(activity.distance),
-      averageSpeed: transformPace(activity.averageSpeed),
-      sportType: activity.sportType,
-      startDate: activity.startDate,
-      averageHeartRate: activity.averageHeartRate,
-      maxHeartRate: activity.maxHeartRate,
-      elapsedTime: transformTime(activity.elapsedTime),
-      totalElevationGain: activity.totalElevationGain,
-      elevHigh: activity.elevHigh,
-      elevLow: activity.elevLow,
-      startLatLng: activity.startLatLng,
-    };
-  });
+  return data.map((activity: Activity, index: number) => handleNewDataLocal(activity, index));
 };
 
 export const fetchActivities = async (dispatch: any, page = 1) => {
@@ -183,7 +156,7 @@ export const getSingleActivity = async (activityId: string | undefined) => {
   }
 
   const data = await response.json();
-  return handleNewDataLocal(data);
+  return handleNewDataLocal(data, 0);
 }
 
 export const getAltitude = async (activityId: string | undefined) => {
@@ -255,3 +228,4 @@ export const handleSingleActivity = async (authState: EAuthState, navigate: Navi
     await checkAuth(dispatch);
   }
 }
+

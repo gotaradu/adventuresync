@@ -5,12 +5,10 @@ import { RootState } from "../context/store";
 import { EActivitiesState, EAuthState } from "../utils/types";
 
 import { useEffect } from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
 
-import { columns } from "../utils/stats";
 import { handleOnRender } from "../utils/visitor";
 import { CustomLoading } from "../components/CustomLoading";
+import { StatsBox } from "../components/StatsBox";
 
 export const StatsPageMock: React.FC = () => {
   const navigate = useNavigate();
@@ -30,28 +28,7 @@ export const StatsPageMock: React.FC = () => {
       localStorage.getItem("visitor") &&
       activitiesState === EActivitiesState.Fetched
     )
-      return (
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={activities}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
-            pageSizeOptions={[10]}
-            disableRowSelectionOnClick
-            autoHeight
-            autosizeOnMount
-            slots={{
-              toolbar: GridToolbar,
-            }}
-          />
-        </Box>
-      );
+      return <StatsBox activities={activities} />;
     else return <CustomLoading />;
   };
 

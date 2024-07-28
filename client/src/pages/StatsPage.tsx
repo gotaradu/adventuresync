@@ -1,7 +1,5 @@
 import { useEffect } from "react";
 
-import Box from "@mui/material/Box";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
@@ -9,8 +7,8 @@ import { EActivitiesState, EAuthState } from "../utils/types";
 import { fetchActivities, handleAllActivities } from "../utils/activities";
 import { checkAuth } from "../utils/auth";
 
-import { columns } from "../utils/stats";
 import { CustomLoading } from "../components/CustomLoading";
+import { StatsBox } from "../components/StatsBox";
 
 export const StatsPage = () => {
   const navigate = useNavigate();
@@ -29,28 +27,7 @@ export const StatsPage = () => {
       authState === EAuthState.User &&
       activitiesState === EActivitiesState.Fetched
     )
-      return (
-        <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={activities}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
-                },
-              },
-            }}
-            pageSizeOptions={[10]}
-            disableRowSelectionOnClick
-            autoHeight
-            autosizeOnMount
-            slots={{
-              toolbar: GridToolbar,
-            }}
-          />
-        </Box>
-      );
+      return <StatsBox activities={activities} />;
     else return <CustomLoading />;
   };
   return render();
