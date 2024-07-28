@@ -7,18 +7,18 @@ import { CustomStats } from "./custom-activity/CustomStats";
 import { CustomMiniMap } from "./custom-activity/CustomMiniMap";
 export const CustomActivity: React.FC<{
   activity: DrawedActivity | null | undefined;
-  StreamData: any;
-}> = ({ activity, StreamData }) => {
+  streamData: any;
+}> = ({ activity, streamData }) => {
   return (
     <Container>
       {activity && <CustomStats activity={activity} />}
       {activity?.mapExists && <CustomMiniMap activity={activity} />}
-      {StreamData ? (
-        <CustomGraph streamData={StreamData} streamType="StreamData" />
+      {streamData ? (
+        <CustomGraph streamData={streamData} streamType="streamData" />
       ) : (
         <Card>
           <CardContent sx={{ textAlign: "center" }}>
-            ------------------------------------------------------- StreamData
+            ------------------------------------------------------- streamData
             graph should be here but the feature is not available on mock data
             -------------------------------------------------------
           </CardContent>
