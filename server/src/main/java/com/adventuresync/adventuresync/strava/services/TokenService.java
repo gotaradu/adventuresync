@@ -94,7 +94,6 @@ public class TokenService {
             DataForAccess dataForAccess = dataForAccessService.mapData(responseEntity.getBody());
             JwtToken jwtToken = new JwtToken(dataForAccess, athleteId);
             dataForAccess.setJwtToken(jwtToken.getToken());
-            System.out.println(responseEntity);
             return dataForAccess;
         } catch (JsonProcessingException processingException) {
             return new DataForAccess();

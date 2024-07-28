@@ -6,7 +6,6 @@ import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.utils.ApiConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -32,8 +31,7 @@ public class StravaActivitiesService {
     }
 
     public ResponseEntity<List<Activity>> getAthleteActivities(HttpServletRequest request, @RequestParam int page) throws JsonProcessingException {
-        System.out.println(page);
-        System.out.println("PAge is called again !!!!!!!!!!!!!!!");
+
         try {
             Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);
             if (jwtCookie.isEmpty()) {
@@ -49,9 +47,7 @@ public class StravaActivitiesService {
             headers.set("Authorization", "Bearer " + data.getAccessToken());
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            String apiUrl = API_URL +
-                    "&page=" + page +
-                    "&per_page=50";
+            String apiUrl = API_URL + "&page=" + page + "&per_page=50";
 
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, String.class);
 
@@ -65,9 +61,9 @@ public class StravaActivitiesService {
                     List<Activity> activities = new ArrayList<>();
                     for (ApiActivity apiActivity : apiActivities) {
 
-                        Activity activity = ApiConverter.apiActivityConverter((apiActivity));
+                        Activity activity = ApiConverter.apiActivityConverter(apiActivity);
                         activities.add(activity);
-                        System.out.println(activity);
+
                     }
 
                     return ResponseEntity.ok(activities);
@@ -75,10 +71,70 @@ public class StravaActivitiesService {
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
+
+    public ResponseEntity<Activity> getActivity(HttpServletRequest request, String activityId) throws JsonProcessingException {
+        System.out.println(activityId);
+        try {
+
+            Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);
+            if (jwtCookie.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            HttpHeaders headers = new HttpHeaders();
+            DataForAccess data = dataForAccessService.getDataFromToken(jwtCookie.get());
+            headers.set("Authorization", "Bearer " + data.getAccessToken());
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            String API_URL = "https://www.strava.com/api/v3/activities/" + activityId;
+
+            ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
+            System.out.println(response);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                String responseBody = response.getBody();
+                if (responseBody != null) {
+                    ApiActivity apiActivity = objectMapper.readValue(responseBody, ApiActivity.class);
+
+                    Activity activity = ApiConverter.apiActivityConverter(apiActivity);
+                    System.out.println(activity);
+                    return ResponseEntity.ok(activity);
+                }
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public ResponseEntity<String> getAltitudeStream(HttpServletRequest request, String activityId) throws JsonProcessingException {
+        System.out.println(activityId);
+        try {
+
+            Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);
+            if (jwtCookie.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            HttpHeaders headers = new HttpHeaders();
+            DataForAccess data = dataForAccessService.getDataFromToken(jwtCookie.get());
+            headers.set("Authorization", "Bearer " + data.getAccessToken());
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            String API_URL = "https://www.strava.com/api/v3/activities/" + activityId + "/streams?keys=altitude&key_by_type=";
+
+            ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
+
+            if (response.getStatusCode().is2xxSuccessful())
+                return response;
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatusCode.valueOf(404));
+        }
+    }
 }
+
 

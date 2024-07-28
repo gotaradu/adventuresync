@@ -46,7 +46,7 @@ public class AuthFilterService implements Filter {
             setHeaders(httpResponse);
             return;
         }
-        if (!httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities")) {
+        if (!httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities") && !httpRequest.getRequestURI().equals("/activities/activity") && !httpRequest.getRequestURI().equals("/activities/stream/activity")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -54,24 +54,17 @@ public class AuthFilterService implements Filter {
             Optional<String> jwt = cookieService.getJwtCookie("jwt", httpRequest);
             if (jwt.isPresent()) {
                 setHeaders(httpResponse);
-                System.out.println(jwt.get() + " asta se primeste in filtru");
                 if (!tokenService.isExpiredJwt(jwt.get())) {
-
-                    System.out.println("Intra aici");
                     dataForAccessDAO.findByJwtToken(jwt.get());
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
-                    // aici trebuie sa fac rost de refresh token
-                    System.out.println("Intra aici 2");
                     stravaLoginService.sentRefreshResponse(httpResponse, jwt.get());
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
             } else {
-                System.out.println("Intra aici 3");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
-        } catch (DataForAccessException | CookieException e) {
-            System.out.println("Intra aici 4");
+        } catch (IOException | DataForAccessException | CookieException e) {
             setHeaders(httpResponse);
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

@@ -34,12 +34,19 @@ public class StravaLoginService {
     }
 
     public RedirectView loginWithStrava(String code, String scope, HttpServletResponse response) {
+        System.out.println(code);
         try {
-            DataForAccess dataForAccess = tokenService.getDataForAccess(code, scope);
-            dataForAccessService.persistDataForAccess(dataForAccess);
-            cookieService.attachCookieToResponse(response, true, dataForAccess.getJwtToken());
-            String redirectUrl = "http://" + ipAddress + ":3000";
-            return new RedirectView(redirectUrl);
+            if (scope.equals("read,activity:read_all,read_all")) {
+                DataForAccess dataForAccess = tokenService.getDataForAccess(code, scope);
+                dataForAccessService.persistDataForAccess(dataForAccess);
+                cookieService.attachCookieToResponse(response, true, dataForAccess.getJwtToken());
+                String redirectUrl = "http://" + ipAddress + ":3000";
+                return new RedirectView(redirectUrl);
+            } else if (code == null) {
+                return new RedirectView("http://" + ipAddress + ":3000" + "/err?errorMessage=invalid_code_provided:" + code);
+            } else {
+                return new RedirectView("http://" + ipAddress + ":3000" + "/err?errorMessage=invalid_scopes_provided:" + scope);
+            }
         } catch (DataForAccessException e) {
             return new RedirectView("http://" + ipAddress + ":3000" + "/err?errorMessage=" + e.getErrorCode().getMessage());
         }
@@ -71,10 +78,14 @@ public class StravaLoginService {
 
     public SummaryAthlete getAthleteFromJwt(HttpServletRequest request) throws JwtException {
         Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);
-        if (jwtCookie.isPresent() && !tokenService.isExpiredJwt(jwtCookie.get())) {
-            return this.dataForAccessService.getDataFromToken(jwtCookie.get()).getSummaryAthlete();
+        if (jwtCookie.isEmpty())
+            throw new JwtException(ErrorCode.ERR0106, null);
+        if (!tokenService.isExpiredJwt(jwtCookie.get())) {
+            return dataForAccessService.getDataFromToken(jwtCookie.get()).getSummaryAthlete();
+        } else {
+            System.out.println(jwtCookie.get());
+            throw new JwtException(ErrorCode.ERR0101, "ce  intra aici");
         }
-        throw new JwtException(ErrorCode.ERR0101, jwtCookie.get());
     }
 
     public void sentRefreshResponse(HttpServletResponse httpResponse, String jwt) throws IOException {

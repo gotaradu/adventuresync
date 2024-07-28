@@ -1,7 +1,7 @@
 package com.adventuresync.adventuresync.strava.controllers;
 
 import com.adventuresync.adventuresync.strava.model.Activity;
-import com.adventuresync.adventuresync.strava.model.ApiActivity;
+
 import com.adventuresync.adventuresync.strava.services.StravaActivitiesService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,12 +21,29 @@ public class StravaController {
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<Activity>> getAthleteActivities(HttpServletRequest request) {
+    public ResponseEntity<List<Activity>> getAthleteActivities(HttpServletRequest request, @RequestParam("page") int page) {
         try {
-            String pageParam = request.getParameter("page");
-            System.out.println("page is : " + pageParam);
-            int page = Integer.parseInt(pageParam);
             return stravaActivitiesService.getAthleteActivities(request, page);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/activities/activity")
+    public ResponseEntity<Activity> getActivityId(HttpServletRequest request, @RequestParam("activityId") String activityId) {
+        System.out.println(activityId);
+        try {
+            return stravaActivitiesService.getActivity(request, activityId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/activities/stream/activity")
+    public ResponseEntity<String> getActivityStream(HttpServletRequest request, @RequestParam("activityId") String activityId) {
+        System.out.println(activityId);
+        try {
+            return stravaActivitiesService.getAltitudeStream(request, activityId);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
