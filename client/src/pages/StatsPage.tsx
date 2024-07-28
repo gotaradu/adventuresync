@@ -1,15 +1,16 @@
-import * as React from "react";
+import { useEffect } from "react";
+
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { EActivitiesState, EAuthState } from "../utils/types";
-import { fetchActivities, getAllActivities } from "../utils/activities";
+import { fetchActivities, handleAllActivities } from "../utils/activities";
 import { checkAuth } from "../utils/auth";
-import CenteredContent from "../components/CenteredContent";
-import { CircularProgress } from "@mui/material";
+
 import { columns } from "../utils/stats";
+import { CustomLoading } from "../components/CustomLoading";
 
 export const StatsPage = () => {
   const navigate = useNavigate();
@@ -19,28 +20,8 @@ export const StatsPage = () => {
   );
   const dispatch = useDispatch();
 
-  const handleOnRender = async () => {
-    if (
-      authState === EAuthState.Error ||
-      activitiesState === EActivitiesState.Error ||
-      authState === EAuthState.Forbidden ||
-      authState === EAuthState.Unauthorized
-    )
-      navigate("/");
-    if (authState === EAuthState.User) {
-      if (activitiesState !== EActivitiesState.Fetched) {
-        await getAllActivities(dispatch);
-      }
-      return;
-    }
-
-    if (authState === EAuthState.Guest) {
-      await checkAuth(dispatch);
-      return;
-    }
-  };
-  React.useEffect(() => {
-    handleOnRender();
+  useEffect(() => {
+    handleAllActivities(authState, activitiesState, navigate, dispatch);
   }, [authState, activitiesState, checkAuth, fetchActivities]);
 
   const render = () => {
@@ -70,12 +51,7 @@ export const StatsPage = () => {
           />
         </Box>
       );
-    else
-      return (
-        <CenteredContent>
-          <CircularProgress />
-        </CenteredContent>
-      );
+    else return <CustomLoading />;
   };
   return render();
 };

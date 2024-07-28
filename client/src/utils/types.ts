@@ -62,3 +62,9 @@ export interface IActivitiesState {
   activities: DrawedActivity[];
   selected: number;
 }
+
+export type ActivityState = {
+  activity: DrawedActivity | null;
+  altitudeStream: any | null;
+  fetchError: string;
+};

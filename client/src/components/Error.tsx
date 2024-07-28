@@ -1,16 +1,22 @@
-import CenteredContent from "../components/CenteredContent";
 import CustomButton from "../components/CustomButton";
 import CustomContainer from "../components/CustomContainer";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Grid } from "@mui/material";
 import { gridItemProps } from "../css/home";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuthState } from "../context/authSlice";
 import { EAuthState } from "../utils/types";
-export default function Error() {
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
+export const Error: React.FC<{ message: string }> = ({ message }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const query = useQuery();
+  const error = query.get("error");
 
   const handleReturn = () => {
     dispatch(
@@ -26,7 +32,7 @@ export default function Error() {
     <Grid container>
       <Grid {...gridItemProps}>
         <CustomContainer>
-          <h1>Something went wrong</h1>
+          <h1>{message + " " + (error ? error : "")}</h1>
         </CustomContainer>
       </Grid>
 
@@ -39,4 +45,4 @@ export default function Error() {
       </Grid>
     </Grid>
   );
-}
+};

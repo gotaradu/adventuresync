@@ -1,6 +1,5 @@
 import CustomMap from "../components/CustomMap";
-import { CircularProgress } from "@mui/material";
-import CenteredContent from "../components/CenteredContent";
+
 import React, { useEffect } from "react";
 import { EActivitiesState, EAuthState } from "../utils/types";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +7,7 @@ import { RootState } from "../context/store";
 
 import { useNavigate } from "react-router-dom";
 import { handleOnRender } from "../utils/visitor";
+import { CustomLoading } from "../components/CustomLoading";
 
 export const ActivitiesPageMock: React.FC = () => {
   const navigate = useNavigate();
@@ -28,12 +28,7 @@ export const ActivitiesPageMock: React.FC = () => {
       activitiesState === EActivitiesState.Fetched
     )
       return <CustomMap path="stats-mock" />;
-    else
-      return (
-        <CenteredContent>
-          <CircularProgress />
-        </CenteredContent>
-      );
+    else return <CustomLoading />;
   };
 
   return render();

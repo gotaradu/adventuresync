@@ -1,6 +1,5 @@
-import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
-import Error from "../components/Error";
+import { Error } from "../components/Error";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { gridItemProps } from "../css/home";
@@ -13,6 +12,7 @@ import { RootState } from "../context/store";
 import { useEffect, useState } from "react";
 import { checkAuth } from "../utils/auth";
 import { setAuthState } from "../context/authSlice";
+import { CustomLoading } from "../components/CustomLoading";
 
 export const HomePage: React.FC = () => {
   const { authState, athlete } = useSelector((state: RootState) => state.auth);
@@ -61,9 +61,7 @@ export const HomePage: React.FC = () => {
     if (isChecking)
       return (
         <Grid {...gridItemProps}>
-          <CustomContainer>
-            <CircularProgress sx={{ color: "#607274" }} />
-          </CustomContainer>
+          <CustomLoading />
         </Grid>
       );
     else if (athlete && authState === EAuthState.User)
@@ -83,7 +81,8 @@ export const HomePage: React.FC = () => {
           </CustomContainer>
         </Grid>
       );
-    else if (!athlete && authState === EAuthState.Error) return <Error />;
+    else if (!athlete && authState === EAuthState.Error)
+      return <Error message="Something went wrong" />;
     else if (
       authState === EAuthState.Guest ||
       authState === EAuthState.Forbidden ||

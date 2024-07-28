@@ -6,10 +6,11 @@ import { EActivitiesState, EAuthState } from "../utils/types";
 
 import { useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Box, CircularProgress } from "@mui/material";
-import CenteredContent from "../components/CenteredContent";
+import { Box } from "@mui/material";
+
 import { columns } from "../utils/stats";
 import { handleOnRender } from "../utils/visitor";
+import { CustomLoading } from "../components/CustomLoading";
 
 export const StatsPageMock: React.FC = () => {
   const navigate = useNavigate();
@@ -51,12 +52,7 @@ export const StatsPageMock: React.FC = () => {
           />
         </Box>
       );
-    else
-      return (
-        <CenteredContent>
-          <CircularProgress />
-        </CenteredContent>
-      );
+    else return <CustomLoading />;
   };
 
   return render();

@@ -13,5 +13,5 @@ export default interface Activity {
   totalElevationGain: number;
   elevHigh: number;
   elevLow: number;
-  startLatLng: number[];
+  startLatLng: [number, number];
 }

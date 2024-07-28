@@ -9,6 +9,7 @@ import { store } from "./context/store";
 import { ActivitiesPageMock } from "./pages/ActivitiesPageMock";
 import { StatsPageMock } from "./pages/StatsPageMock";
 import { ActivityPageMock } from "./pages/ActivityPageMock";
+import { Error } from "./components/Error";
 
 function App() {
   return (
@@ -25,6 +26,11 @@ function App() {
             path="/stats-mock/:activityId"
             element={<ActivityPageMock />}
           />
+          <Route
+            path="/error"
+            element={<Error message="Something went wrong during login" />}
+          />
+          <Route path="*" element={<Error message="Page does not exist" />} />
         </Routes>
       </BrowserRouter>
     </Provider>

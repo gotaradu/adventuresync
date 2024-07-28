@@ -1,9 +1,14 @@
+
+import { LatLng } from "leaflet";
 import { setActivitiesState } from "../context/activitiesSlice";
 import { ipAddress } from "../context/config/ipAddreses";
 import Activity from "../models/Activity";
 import DrawedActivity from "../models/DrawedActivity";
 import decode from "./decode";
-import { EActivitiesState } from "./types";
+import { ActivityState, EActivitiesState, EAuthState } from "./types";
+import { NavigateFunction } from "react-router-dom";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
+import { checkAuth } from "./auth";
 
 const transformDistance = (distance: number) => parseFloat((distance / 1000).toFixed(2));
 
@@ -37,6 +42,36 @@ const transformPace = (speed: number) => {
   else return ""
 };
 
+const handleNewDataLocal = (activity: Activity): DrawedActivity => {
+  const mapExists = !!activity.map;
+  const pointsa = mapExists
+    ? decode(activity.map).map((point) => new LatLng(
+      point.latitude,
+      point.longitude,
+    ))
+    : [];
+
+  return {
+    id: activity.id,
+    athleteId: activity.athleteId,
+    name: activity.name,
+    mapExists,
+    index: 0,
+    mapString: activity.map,
+    pointsa,
+    distance: transformDistance(activity.distance),
+    averageSpeed: transformPace(activity.averageSpeed),
+    sportType: activity.sportType,
+    startDate: activity.startDate,
+    averageHeartRate: activity.averageHeartRate,
+    maxHeartRate: activity.maxHeartRate,
+    elapsedTime: transformTime(activity.elapsedTime),
+    totalElevationGain: activity.totalElevationGain,
+    elevHigh: activity.elevHigh,
+    elevLow: activity.elevLow,
+    startLatLng: activity.startLatLng,
+  };
+}
 export const handleNewData = (data: any): DrawedActivity[] => {
   return data.map((activity: Activity, index: number) => {
     const mapExists = !!activity.map;
@@ -132,3 +167,91 @@ export const getAllActivities = async (dispatch: any) => {
     page++;
   } while (activities.length === perPage);
 };
+
+export const getSingleActivity = async (activityId: string | undefined) => {
+  const response = await fetch(`${ipAddress}:8080/activities/activity?activityId=${activityId}`, {
+    method: "GET",
+    headers: {
+      Origin: `${ipAddress}:3000`,
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  return handleNewDataLocal(data);
+}
+
+export const getAltitude = async (activityId: string | undefined) => {
+  const response = await fetch(`${ipAddress}:8080/activities/stream/activity?activityId=${activityId}`, {
+    method: "GET",
+    headers: {
+      Origin: `${ipAddress}:3000`,
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+export const handleAllActivities = async (authState: EAuthState, activitiesState: EActivitiesState, navigate: NavigateFunction, dispatch: Dispatch<UnknownAction>) => {
+  if (
+    authState === EAuthState.Error ||
+    activitiesState === EActivitiesState.Error ||
+    authState === EAuthState.Forbidden ||
+    authState === EAuthState.Unauthorized
+  )
+    navigate("/");
+  if (authState === EAuthState.User) {
+    if (activitiesState !== EActivitiesState.Fetched) {
+      await getAllActivities(dispatch);
+    }
+    return;
+  }
+
+  if (authState === EAuthState.Guest) {
+    await checkAuth(dispatch);
+    return;
+  }
+};
+
+export const handleSingleActivity = async (authState: EAuthState, navigate: NavigateFunction, activityId: string | undefined, dispatch: Dispatch<UnknownAction>, useCustomState: React.Dispatch<React.SetStateAction<ActivityState>>) => {
+  if (
+    authState === EAuthState.Error ||
+    authState === EAuthState.Forbidden ||
+    authState === EAuthState.Unauthorized
+  ) {
+    navigate("/");
+    return;
+  }
+
+  if (authState === EAuthState.User) {
+    try {
+      const apiActivity = await getSingleActivity(activityId);
+      const altitudeStreamData = await getAltitude(activityId);
+      useCustomState((prevState) => ({
+        ...prevState,
+        activity: apiActivity,
+        altitudeStream: altitudeStreamData,
+        fetchError: "",
+      }));
+    } catch (error) {
+      useCustomState((prevState) => ({
+        ...prevState,
+        fetchError: "Resource not found",
+      }));
+    }
+  } else if (authState === EAuthState.Guest) {
+    await checkAuth(dispatch);
+  }
+}

@@ -1,13 +1,13 @@
 import CustomMap from "../components/CustomMap";
-import { CircularProgress } from "@mui/material";
-import CenteredContent from "../components/CenteredContent";
+
 import React, { useEffect } from "react";
 import { EActivitiesState, EAuthState } from "../utils/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { checkAuth } from "../utils/auth";
-import { fetchActivities, getAllActivities } from "../utils/activities";
+import { fetchActivities, handleAllActivities } from "../utils/activities";
 import { useNavigate } from "react-router-dom";
+import { CustomLoading } from "../components/CustomLoading";
 
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,28 +17,8 @@ export const ActivitiesPage: React.FC = () => {
   );
   const dispatch = useDispatch();
 
-  const handleOnRender = async () => {
-    if (
-      authState === EAuthState.Error ||
-      activitiesState === EActivitiesState.Error ||
-      authState === EAuthState.Forbidden ||
-      authState === EAuthState.Unauthorized
-    )
-      navigate("/");
-    if (authState === EAuthState.User) {
-      if (activitiesState !== EActivitiesState.Fetched) {
-        await getAllActivities(dispatch);
-      }
-      return;
-    }
-
-    if (authState === EAuthState.Guest) {
-      await checkAuth(dispatch);
-      return;
-    }
-  };
   useEffect(() => {
-    handleOnRender();
+    handleAllActivities(authState, activitiesState, navigate, dispatch);
   }, [authState, activitiesState, checkAuth, fetchActivities]);
 
   const render = () => {
@@ -47,12 +27,7 @@ export const ActivitiesPage: React.FC = () => {
       activitiesState === EActivitiesState.Fetched
     )
       return <CustomMap path="stats" />;
-    else
-      return (
-        <CenteredContent>
-          <CircularProgress />
-        </CenteredContent>
-      );
+    else return <CustomLoading />;
   };
 
   return render();
