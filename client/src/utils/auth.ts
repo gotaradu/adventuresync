@@ -15,6 +15,8 @@ export const checkAuth = async (dispatch: any) => {
     });
 
     if (response.ok) {
+      const resp = await response;
+      console.log(resp)
       const data: ApiResp = await response.json();
       dispatch(
         setAuthState({

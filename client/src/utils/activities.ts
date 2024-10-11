@@ -72,6 +72,7 @@ const handleNewDataLocal = (activity: Activity, index: number): DrawedActivity =
     elevHigh: activity.elevHigh,
     elevLow: activity.elevLow,
     startLatLng: activity.startLatLng,
+    calories: activity.calories,
   };
 }
 export const handleNewData = (data: any): DrawedActivity[] => {
@@ -211,6 +212,7 @@ export const handleSingleActivity = async (authState: EAuthState, navigate: Navi
   if (authState === EAuthState.User) {
     try {
       const apiActivity = await getSingleActivity(activityId);
+      console.log(apiActivity)
       const altitudeStreamData = await getAltitude(activityId);
       useCustomState((prevState) => ({
         ...prevState,

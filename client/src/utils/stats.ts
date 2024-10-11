@@ -12,11 +12,11 @@ const compareTimes = (time1: string, time2: string) => {
 
 export const columns: GridColDef<(DrawedActivity[])[number]>[] = [
     { field: "id", headerName: "ID", width: 140 },
-    {
-        field: "athleteId",
-        headerName: "Athlete ID",
-        width: 150,
-    },
+    // {
+    //     field: "athleteId",
+    //     headerName: "Athlete ID",
+    //     width: 150,
+    // },
     {
         field: "name",
         headerName: "Name",
@@ -83,15 +83,15 @@ export const columns: GridColDef<(DrawedActivity[])[number]>[] = [
         },
     },
 
-    {
-        field: "startLatLng",
-        headerName: "Start LatLng",
-        width: 200,
-        renderCell: (params) => {
-            const [lat, lng] = (params.value as [number, number]) || [];
-            return lat && lng ? `[${lat.toFixed(2)}, ${lng.toFixed(2)}]` : "N/A";
-        },
-    },
+    // {
+    //     field: "startLatLng",
+    //     headerName: "Start LatLng",
+    //     width: 200,
+    //     renderCell: (params) => {
+    //         const [lat, lng] = (params.value as [number, number]) || [];
+    //         return lat && lng ? `[${lat.toFixed(2)}, ${lng.toFixed(2)}]` : "N/A";
+    //     },
+    // },
 
     {
         field: "averageSpeed",

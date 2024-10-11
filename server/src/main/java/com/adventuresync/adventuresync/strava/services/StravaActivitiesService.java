@@ -1,21 +1,28 @@
 package com.adventuresync.adventuresync.strava.services;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.adventuresync.adventuresync.strava.model.Activity;
 import com.adventuresync.adventuresync.strava.model.ApiActivity;
 import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.utils.ApiConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.*;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StravaActivitiesService {
@@ -86,7 +93,7 @@ public class StravaActivitiesService {
             }
             HttpHeaders headers = new HttpHeaders();
             DataForAccess data = dataForAccessService.getDataFromToken(jwtCookie.get());
-            headers.set("Authorization", "Bearer " + data.getAccessToken());
+            headers.set("Authorization", "Bearer "+ data.getAccessToken());
 
             HttpEntity<String> entity = new HttpEntity<>(headers);
             String API_URL = "https://www.strava.com/api/v3/activities/" + activityId;

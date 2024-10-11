@@ -14,4 +14,5 @@ export default interface Activity {
   elevHigh: number;
   elevLow: number;
   startLatLng: [number, number];
+  calories: number;
 }

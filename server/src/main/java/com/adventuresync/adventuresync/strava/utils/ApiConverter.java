@@ -21,6 +21,7 @@ public class ApiConverter {
         activity.setElevHigh(apiActivity.elevHigh());
         activity.setElevLow(apiActivity.elevLow());
         activity.setStartLatLng(apiActivity.startLatLng());
+        activity.setCalories(apiActivity.calories());
         return activity;
     }
 

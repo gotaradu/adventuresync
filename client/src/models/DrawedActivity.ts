@@ -19,4 +19,5 @@ export default interface DrawedActivity {
   elevHigh: number;
   elevLow: number;
   startLatLng: [number, number];
+  calories: number;
 }

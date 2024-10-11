@@ -30,6 +30,15 @@ public class Activity {
     private float averageWatts;
     private boolean deviceWatts;
     private int maxWatts;
+    private float calories;
+
+    public float getCalories() {
+        return calories;
+    }
+
+    public void setCalories(float calories) {
+        this.calories = calories;
+    }
 
     public String getId() {
         return id;
@@ -230,6 +239,7 @@ public class Activity {
     public void setMaxWatts(int maxWatts) {
         this.maxWatts = maxWatts;
     }
+
     // double \ as toString() method only shows 1
     private String setForToString(String map) {
         return map.replace("\\", "\\\\");

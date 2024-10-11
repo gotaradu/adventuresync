@@ -3,10 +3,13 @@ package com.adventuresync.adventuresync.strava.services;
 import com.adventuresync.adventuresync.strava.dao.impl.DataForAccessDAOImpl;
 import com.adventuresync.adventuresync.strava.exceptions.CookieException;
 import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
+import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,13 +43,20 @@ public class AuthFilterService implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
+
+        System.out.println("Request URI: " + httpRequest.getRequestURI());
+
+
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
             setHeaders(httpResponse);
             return;
         }
-        if (!httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities") && !httpRequest.getRequestURI().equals("/activities/activity") && !httpRequest.getRequestURI().equals("/activities/stream/activity")) {
+
+        if (!httpRequest.getRequestURI().equals("/error") && !httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities") && !httpRequest.getRequestURI().equals("/activities/activity") && !httpRequest.getRequestURI().equals("/activities/stream/activity")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -55,16 +65,26 @@ public class AuthFilterService implements Filter {
             if (jwt.isPresent()) {
                 setHeaders(httpResponse);
                 if (!tokenService.isExpiredJwt(jwt.get())) {
-                    dataForAccessDAO.findByJwtToken(jwt.get());
-                    filterChain.doFilter(servletRequest, servletResponse);
+
+                    DataForAccess data = dataForAccessDAO.findByJwtToken(jwt.get());
+                    if (data != null) {
+                        var authentication = new UsernamePasswordAuthenticationToken(data, null, null);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        filterChain.doFilter(servletRequest, servletResponse);
+                    } else {
+                        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    }
                 } else {
                     stravaLoginService.sentRefreshResponse(httpResponse, jwt.get());
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
             } else {
+                System.out.println("intra aici cumva?");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (IOException | DataForAccessException | CookieException e) {
+            System.out.println("plm 2");
+
             setHeaders(httpResponse);
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

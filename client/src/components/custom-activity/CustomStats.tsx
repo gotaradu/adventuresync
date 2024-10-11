@@ -26,6 +26,14 @@ export const CustomStats: React.FC<{ activity: DrawedActivity }> = ({
             <List>
               <ListItem>
                 <ListItemText
+                  primary="Date"
+                  secondary={`${new Date(activity?.startDate)
+                    .toDateString()
+                    .substring(0, 10)}`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
                   primary="Distance"
                   secondary={`${activity?.distance} km`}
                 />
@@ -86,6 +94,12 @@ export const CustomStats: React.FC<{ activity: DrawedActivity }> = ({
                 <ListItemText
                   primary="Start Coordinates"
                   secondary={`[${activity?.startLatLng.join(", ")}]`}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemText
+                  primary="Calories"
+                  secondary={activity?.calories}
                 />
               </ListItem>
             </List>

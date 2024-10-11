@@ -36,7 +36,7 @@ export const ActivityPageMock: React.FC = () => {
       return (
         <CustomActivity
           activity={customState.activity}
-          altitude={customState.altitudeStream}
+          streamData={customState.altitudeStream}
         />
       );
     else

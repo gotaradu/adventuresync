@@ -32,35 +32,38 @@ public record ApiActivity(
         float kilojoules,
         @JsonProperty("average_watts") float averageWatts,
         @JsonProperty("device_watts") boolean deviceWatts,
-        @JsonProperty("max_watts") int maxWatts
+        @JsonProperty("max_watts") int maxWatts,
+        float calories
 ) {
     @Override
     public String toString() {
-        return "{" +
-                "id:'" + id + '\'' +
-                ", name:'" + name + '\'' +
-                ", athlete:" + athlete.id() +
-                ", distance:" + distance +
-                ", averageHeartrate:" + averageHeartrate +
-                ", elapsedTime:" + elapsedTime +
-                ", totalElevationGain:" + totalElevationGain +
-                ", elevHigh:" + elevHigh +
-                ", elevLow:" + elevLow +
-                ", type:'" + type + '\'' +
-                ", sportType:" + "'" + sportType + "'" +
-                ", startDate:" + "'" + startDate + "'" +
-                ", startDateLocal:" + "'" + startDateLocal + "'" +
-                ", timezone:'" + timezone + '\'' +
-                ", startLatLng:" + Arrays.toString(startLatLng) +
-                ", endLatLng:" + Arrays.toString(endLatLng) +
-                ", athleteCount:" + athleteCount +
-                ", map:" + "'" + map.polyline() + "'" +
-                ", averageSpeed:" + averageSpeed +
-                ", maxSpeed:" + maxSpeed +
-                ", kilojoules:" + kilojoules +
-                ", averageWatts:" + averageWatts +
-                ", deviceWatts:" + deviceWatts +
-                ", maxWatts:" + maxWatts +
-                "},";
+        return "ApiActivity{" +
+                "id='" + id + '\'' +
+                ", athlete=" + athlete +
+                ", name='" + name + '\'' +
+                ", distance=" + distance +
+                ", averageHeartrate=" + averageHeartrate +
+                ", maxHeartRate=" + maxHeartRate +
+                ", elapsedTime=" + elapsedTime +
+                ", totalElevationGain=" + totalElevationGain +
+                ", elevHigh=" + elevHigh +
+                ", elevLow=" + elevLow +
+                ", type='" + type + '\'' +
+                ", sportType=" + sportType +
+                ", startDate=" + startDate +
+                ", startDateLocal=" + startDateLocal +
+                ", timezone='" + timezone + '\'' +
+                ", startLatLng=" + Arrays.toString(startLatLng) +
+                ", endLatLng=" + Arrays.toString(endLatLng) +
+                ", athleteCount=" + athleteCount +
+                ", map=" + map +
+                ", averageSpeed=" + averageSpeed +
+                ", maxSpeed=" + maxSpeed +
+                ", kilojoules=" + kilojoules +
+                ", averageWatts=" + averageWatts +
+                ", deviceWatts=" + deviceWatts +
+                ", maxWatts=" + maxWatts +
+                ", calories=" + calories +
+                '}';
     }
 }

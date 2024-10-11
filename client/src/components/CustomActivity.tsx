@@ -14,7 +14,7 @@ export const CustomActivity: React.FC<{
       {activity && <CustomStats activity={activity} />}
       {activity?.mapExists && <CustomMiniMap activity={activity} />}
       {streamData ? (
-        <CustomGraph streamData={streamData} streamType="streamData" />
+        <CustomGraph streamData={streamData} streamType="Altitude" />
       ) : (
         <Card>
           <CardContent sx={{ textAlign: "center" }}>

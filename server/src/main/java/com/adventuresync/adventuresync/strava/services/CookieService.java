@@ -18,18 +18,26 @@ public class CookieService {
     }
 
     public Optional<String> getJwtCookie(String jwtCookieName, HttpServletRequest request) throws CookieException {
+        System.out.println(jwtCookieName + " name ");
+        System.out.println(jwtCookieName.isEmpty() + " empty");
+        System.out.println(jwtCookieName != null && !jwtCookieName.isEmpty());
         if (jwtCookieName != null && !jwtCookieName.isEmpty()) {
+            System.out.println("intra aici");
             Cookie[] cookies = getCookies(request);
             if (cookies != null) {
+                System.out.println("intra aici 2");
                 for (Cookie cookie : cookies) {
+                    System.out.println("intra aici 3 " + cookie.getName());
                     if (cookie.getName().equals(jwtCookieName)) {
                         return Optional.of(cookie.getValue());
                     }
                 }
             } else {
+                System.out.println("intra eroare");
                 throw new CookieException(ErrorCode.ERR0050);
             }
         }
+        System.out.println("plm");
         throw new CookieException(ErrorCode.ERR0051, jwtCookieName);
     }
 

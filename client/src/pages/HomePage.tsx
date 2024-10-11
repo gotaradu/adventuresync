@@ -19,6 +19,7 @@ export const HomePage: React.FC = () => {
   const [isChecking, setIsChecking] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [canShowWelcome, setCanShowWelcome] = useState(false);
 
   const handleLogin = () => {
     localStorage.clear();
@@ -55,16 +56,28 @@ export const HomePage: React.FC = () => {
     if (authState !== EAuthState.User && authState !== EAuthState.Visitor) {
       checkAuth(dispatch);
     }
+
+    if (
+      authState === EAuthState.Guest ||
+      authState === EAuthState.Forbidden ||
+      authState === EAuthState.Unauthorized ||
+      authState === EAuthState.Visitor
+    ) {
+      setTimeout(() => {
+        setCanShowWelcome(true);
+      }, 1500);
+    }
     return () => clearTimeout(timeoutId);
   }, [authState, dispatch]);
+
   const handleView = () => {
-    if (isChecking)
+    if (isChecking || (!canShowWelcome && !athlete))
       return (
         <Grid {...gridItemProps}>
           <CustomLoading />
         </Grid>
       );
-    else if (athlete && authState === EAuthState.User)
+    else if (athlete && authState === EAuthState.User) {
       return (
         <Grid {...gridItemProps}>
           <CustomContainer>
@@ -81,13 +94,14 @@ export const HomePage: React.FC = () => {
           </CustomContainer>
         </Grid>
       );
-    else if (!athlete && authState === EAuthState.Error)
+    } else if (!athlete && authState === EAuthState.Error)
       return <Error message="Something went wrong" />;
     else if (
-      authState === EAuthState.Guest ||
-      authState === EAuthState.Forbidden ||
-      authState === EAuthState.Unauthorized ||
-      authState === EAuthState.Visitor
+      canShowWelcome &&
+      (authState === EAuthState.Guest ||
+        authState === EAuthState.Forbidden ||
+        authState === EAuthState.Unauthorized ||
+        authState === EAuthState.Visitor)
     ) {
       return (
         <Grid {...gridItemProps}>
