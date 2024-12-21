@@ -13,6 +13,7 @@ import DrawedActivity from "../../models/DrawedActivity";
 export const CustomStats: React.FC<{ activity: DrawedActivity }> = ({
   activity,
 }) => {
+  
   return (
     <Card>
       <CardContent>
@@ -27,9 +28,7 @@ export const CustomStats: React.FC<{ activity: DrawedActivity }> = ({
               <ListItem>
                 <ListItemText
                   primary="Date"
-                  secondary={`${new Date(activity?.startDate)
-                    .toDateString()
-                    .substring(0, 10)}`}
+                  secondary={`${activity?.startDate}`}
                 />
               </ListItem>
               <ListItem>
@@ -96,12 +95,15 @@ export const CustomStats: React.FC<{ activity: DrawedActivity }> = ({
                   secondary={`[${activity?.startLatLng.join(", ")}]`}
                 />
               </ListItem>
+              {activity.calories ? 
               <ListItem>
                 <ListItemText
                   primary="Calories"
                   secondary={activity?.calories}
                 />
               </ListItem>
+              : null
+            }   
             </List>
           </Grid>
         </Grid>

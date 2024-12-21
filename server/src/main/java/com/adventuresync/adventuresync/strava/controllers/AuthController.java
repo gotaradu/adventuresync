@@ -45,7 +45,7 @@ public class AuthController {
                                                  @RequestParam(required = false) String error, HttpServletResponse response) {
         if (error != null) {
             System.out.println("Error: " + error);
-
+            System.out.println(response);
             RedirectView redirectView = new RedirectView("http://" + ipAddress + ":3000/error");
             redirectView.addStaticAttribute("error", error);
             return redirectView;

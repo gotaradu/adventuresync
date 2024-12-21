@@ -42,6 +42,7 @@ export const HomePage: React.FC = () => {
     navigate(path);
   };
   const handleLogout = () => {
+    console.log('logout not implemented')
     navigate("/");
   };
 

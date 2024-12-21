@@ -27,8 +27,8 @@ function App() {
             element={<ActivityPageMock />}
           />
           <Route
-            path="/error"
-            element={<Error message="Something went wrong during login" />}
+            path="/err"
+            element={<Error message="" />}
           />
           <Route path="*" element={<Error message="Page does not exist" />} />
         </Routes>

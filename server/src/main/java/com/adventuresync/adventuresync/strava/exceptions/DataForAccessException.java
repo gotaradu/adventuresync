@@ -10,6 +10,7 @@ public class DataForAccessException extends RuntimeException {
 
     public DataForAccessException(ErrorCode errorCode, String data) {
         this.errorCode = errorCode;
+        System.out.println(data);
         Logger logger = Logger.getLogger(DataForAccess.class.getName());
         logger.log(Level.SEVERE, errorCode.getMessage(), data);
     }

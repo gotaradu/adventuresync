@@ -44,6 +44,8 @@ const transformPace = (speed: number) => {
   else return ""
 };
 
+
+
 const handleNewDataLocal = (activity: Activity, index: number): DrawedActivity => {
   const mapExists = !!activity.map;
   const pointsa = mapExists

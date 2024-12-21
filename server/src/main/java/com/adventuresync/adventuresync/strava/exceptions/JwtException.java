@@ -10,6 +10,7 @@ public class JwtException extends RuntimeException {
 
     public JwtException(ErrorCode errorCode, String data) {
         this.errorCode = errorCode;
+        System.out.println(data);
         Logger logger = Logger.getLogger(DataForAccess.class.getName());
         logger.log(Level.SEVERE, errorCode.getMessage(), data);
     }

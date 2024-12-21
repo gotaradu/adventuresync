@@ -25,6 +25,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11878118625",
@@ -52,6 +53,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11878096532",
@@ -79,6 +81,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11849189659",
@@ -106,6 +109,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11849189397",
@@ -133,6 +137,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11838271095",
@@ -160,6 +165,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11838270823",
@@ -187,6 +193,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11820504640",
@@ -214,6 +221,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11809630302",
@@ -268,6 +276,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11796113196",
@@ -295,6 +304,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11793246910",
@@ -322,6 +332,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11793246747",
@@ -349,6 +360,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11769106535",
@@ -376,6 +388,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11732849676",
@@ -403,6 +416,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11730680253",
@@ -430,6 +444,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11652391604",
@@ -457,6 +472,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11628851514",
@@ -484,6 +500,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11611967829",
@@ -511,6 +528,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11574018468",
@@ -538,6 +556,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11540299622",
@@ -565,6 +584,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11526557066",
@@ -592,6 +612,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11487636989",
@@ -619,6 +640,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11464395310",
@@ -646,6 +668,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11414714215",
@@ -673,6 +696,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11348072588",
@@ -700,6 +724,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11339967985",
@@ -727,6 +752,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11317528981",
@@ -754,6 +780,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11299678821",
@@ -781,6 +808,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11299679035",
@@ -808,6 +836,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11286792125",
@@ -835,6 +864,7 @@ export const mockActivities = [
     averageWatts: 0.0,
     deviceWatts: false,
     maxWatts: 0,
+    calories: 2124,
   },
   {
     id: "11164717138",

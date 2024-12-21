@@ -16,7 +16,7 @@ export const Error: React.FC<{ message: string }> = ({ message }) => {
   const dispatch = useDispatch();
 
   const query = useQuery();
-  const error = query.get("error");
+  const error = query.get("errorMessage");
 
   const handleReturn = () => {
     dispatch(

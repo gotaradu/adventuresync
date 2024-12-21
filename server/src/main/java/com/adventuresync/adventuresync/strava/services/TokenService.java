@@ -40,6 +40,7 @@ public class TokenService {
             HttpEntity<String> request = new HttpEntity<>(body, httpHeaders);
             return restTemplate.postForEntity(url, request, String.class);
         } catch (RestClientException e) {
+            System.out.println(e);
             throw new JwtException(ErrorCode.ERR0105, body);
         }
     }
@@ -81,6 +82,7 @@ public class TokenService {
             } catch (SignatureException e) {
                 throw new JwtException(ErrorCode.ERR0102, token);
             } catch (Exception e) {
+                System.out.println(e);
                 throw new JwtException(ErrorCode.ERR0100, token);
             }
         }

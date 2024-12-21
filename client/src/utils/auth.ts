@@ -13,7 +13,7 @@ export const checkAuth = async (dispatch: any) => {
       },
       credentials: "include",
     });
-
+    console.log("Response received:", response);
     if (response.ok) {
       const resp = await response;
       console.log(resp)
@@ -51,9 +51,10 @@ export const checkAuth = async (dispatch: any) => {
       );
   } catch (error) {
     console.log(error);
+    console.log("aici")
     dispatch(
       setAuthState({
-        authState: EAuthState.Error,
+        authState: EAuthState.Guest,
         athlete: undefined,
         message: "Error on the server",
       })

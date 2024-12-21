@@ -20,6 +20,9 @@ public class JwtToken {
 
     public JwtToken(DataForAccess dataForAccess) {
         try {
+            if (System.getenv("SECRET_KEY") == null) {
+                throw new IllegalArgumentException("SECRET_KEY is not set in the environment variables");
+            }
             SecretKey key = Keys.hmacShaKeyFor(System.getenv("SECRET_KEY").getBytes());
             this.token = Jwts.builder()
                     .subject(dataForAccess.getSummaryAthlete().getId())
@@ -28,7 +31,7 @@ public class JwtToken {
                     .compact();
 
         } catch (InvalidKeyException keyException) {
-            throw new JwtException(ErrorCode.ERR0100, dataForAccess.getSummaryAthlete().getId());
+            throw new JwtException(ErrorCode.ERR0100, keyException.getMessage());
         }
     }
 

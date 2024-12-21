@@ -116,12 +116,6 @@ export const ActivityCard: React.FC<{
                   {activity.averageSpeed}
                 </div>
               ) : null}
-              {activity.startDate ? (
-                <div>
-                  <CalendarMonthIcon sx={{ fontSize: 15 }} />
-                  {new Date(activity.startDate).toDateString()}
-                </div>
-              ) : null}
             </div>
           </div>
         </Card>
