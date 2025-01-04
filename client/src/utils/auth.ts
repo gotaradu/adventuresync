@@ -71,14 +71,14 @@ export const logout = async (dispatch: any) => {
       },
       credentials: "include",
     });
-
-    dispatch(
-      setAuthState({
-        authState: EAuthState.Guest,
-        athlete: undefined,
-        message: "Guest",
-      })
-    );
+    if (response.ok)
+      dispatch(
+        setAuthState({
+          authState: EAuthState.Guest,
+          athlete: undefined,
+          message: "Guest",
+        })
+      );
   } catch (error) {
     console.error("Error during logout: ", error);
   }

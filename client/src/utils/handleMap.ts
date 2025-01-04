@@ -5,7 +5,6 @@ import "../css/popup.css";
 import { MutableRefObject } from "react";
 
 export const arrayToLatLng = (coords: [number, number]) => {
-
   if (coords.length === 2) return new LatLng(coords[0], coords[1]);
   return new LatLng(0, 0);
 };
@@ -17,13 +16,16 @@ function createPopupContent(activity: DrawedActivity) {
   title.textContent = activity.name;
   container.appendChild(title);
 
-  const location = document.createElement("p");
-  location.textContent = activity.distance.toString() + " km";
-  container.appendChild(location);
+  const distance = document.createElement("p");
+  distance.textContent = activity.distance.toString() + " km";
+  container.appendChild(distance);
 
-  const idElement = document.createElement("div");
-  idElement.textContent = `ID: ${activity.id}`;
-  container.appendChild(idElement);
+  const linkToStrava = document.createElement("a");
+  linkToStrava.textContent = "View on Strava";
+  linkToStrava.href = `https://www.strava.com/activities/${activity.id}`;
+  linkToStrava.target = "_blank";
+  linkToStrava.rel = "noopener noreferrer";
+  container.appendChild(linkToStrava);
 
   const button = document.createElement("button");
   button.textContent = "See stats";

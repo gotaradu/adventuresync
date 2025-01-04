@@ -12,6 +12,8 @@ import { setAuthState } from "../context/authSlice";
 import { CustomLoading } from "../components/CustomLoading";
 import "../css/home.css";
 import Buttons from "../components/Buttons";
+import stravaButton from "../css/images/strava_button.png";
+import compStrava from "../css/images/comp_strava.png";
 
 export const HomePage: React.FC = () => {
   const { authState, athlete } = useSelector((state: RootState) => state.auth);
@@ -77,6 +79,15 @@ export const HomePage: React.FC = () => {
               Sync
             </div>
             <Buttons />
+            <img
+              src={compStrava}
+              style={{
+                backgroundSize: "contain",
+                border: "none",
+                width: "168px",
+                height: "60px",
+              }}
+            />
           </CustomContainer>
         </>
       );
@@ -97,12 +108,30 @@ export const HomePage: React.FC = () => {
           <div className="adventure-text" style={{ color: "#607274" }}>
             Sync
           </div>
-          <CustomButton handleOnClick={handleLogin}>
-            Login with Strava
-          </CustomButton>
+
+          <button
+            onClick={handleLogin}
+            style={{
+              background: `url(${stravaButton}) no-repeat center`,
+              backgroundSize: "contain",
+              border: "none",
+              width: "168px",
+              height: "60px",
+              cursor: "pointer",
+            }}
+          ></button>
           <CustomButton handleOnClick={handleMock}>
             with Custom data
           </CustomButton>
+          <img
+            src={compStrava}
+            style={{
+              backgroundSize: "contain",
+              border: "none",
+              width: "168px",
+              height: "60px",
+            }}
+          />
         </CustomContainer>
       );
     }

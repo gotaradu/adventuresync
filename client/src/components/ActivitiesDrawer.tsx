@@ -3,11 +3,10 @@ import {
   Button,
   List,
   Box,
-  useMediaQuery,
-  useTheme,
-  Menu,
-  MenuItem,
   Drawer,
+  IconButton,
+  Tooltip,
+  useTheme,
 } from "@mui/material";
 import { useMap } from "react-leaflet";
 
@@ -16,25 +15,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 
 import { setSelected } from "../context/activitiesSlice";
-
 import { useNavigate } from "react-router-dom";
+import { logout } from "../utils/auth";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
+import BarChartIcon from "@mui/icons-material/BarChart";
+
+import LogoutIcon from "@mui/icons-material/Logout";
+import HeatMapIcon from "@mui/icons-material/Map";
+import { EAuthState } from "../utils/types";
 
 const ActivitiesDrawer: React.FC<{
   popupRef: MutableRefObject<L.Popup | null>;
   path: string;
 }> = ({ popupRef, path }) => {
   const { activities } = useSelector((state: RootState) => state.activities);
+  const { authState } = useSelector((state: RootState) => state.auth);
+
+  const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const dispatch = useDispatch();
   const map = useMap();
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const toggleDrawer = () => {
     setOpen((prev) => !prev);
   };
+
   const renderedCards = useMemo(() => {
     return activities.map((activity, index) => (
       <ActivityCard
@@ -54,171 +62,73 @@ const ActivitiesDrawer: React.FC<{
     toggleDrawer();
   };
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   return (
     <>
-      {isMobile ? (
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              position: "fixed",
-              zIndex: 400,
-              top: "2%",
-              right: "2%",
-            }}
-          >
-            <Button
-              onClick={handleMenuClick}
-              sx={{
-                background: "white",
-                border: "2px solid black",
-                display: open ? "none" : "block",
-              }}
-              color="success"
-            >
-              Menu
-            </Button>
-          </Box>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <MenuItem
-              onClick={() => {
-                navigate(`/${path}`);
-                handleMenuClose();
-              }}
-            >
-              Stats
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                navigate(`/`);
-                handleMenuClose();
-              }}
-            >
-              Home
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                toggleDrawer();
-                handleMenuClose();
-              }}
-            >
-              Open Activities
-            </MenuItem>
-          </Menu>
-        </>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            position: "fixed",
-            zIndex: 400,
-            top: "2%",
-            right: "2%",
-          }}
-        >
-          <Button
+      <Box
+        sx={{
+          position: "fixed",
+          top: "10px",
+          right: "10px",
+          zIndex: 400,
+        }}
+      >
+        <Tooltip title="Menu">
+          <IconButton
             onClick={toggleDrawer}
             sx={{
               background: "white",
               border: "2px solid black",
-              transition: "right 0.3s ease",
-              display: open ? "none" : "block",
-              margin: "5px",
-              minWidth: "150px",
             }}
-            color="success"
           >
-            Open Activities
+            <MenuIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Drawer open={open} onClose={toggleDrawer} anchor="right">
+        <Box
+          sx={{
+            padding: "10px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+          }}
+        >
+          <Button
+            onClick={() => navigate("/")}
+            startIcon={<HomeIcon />}
+            variant="outlined"
+            sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}
+          >
+            Home
           </Button>
           <Button
-            onClick={() => {
-              navigate(`/${path}`);
-            }}
-            sx={{
-              background: "white",
-              border: "2px solid black",
-              transition: "right 0.3s ease",
-              display: open ? "none" : "block",
-              margin: "5px",
-              minWidth: "150px",
-            }}
-            color="success"
+            onClick={() => navigate(`/${path}`)}
+            startIcon={<BarChartIcon />}
+            variant="outlined"
+            sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}
           >
             Stats
           </Button>
           <Button
-            onClick={() => {
-              navigate(`/`);
-            }}
-            sx={{
-              background: "white",
-              border: "2px solid black",
-              transition: "right 0.3s ease",
-              display: open ? "none" : "block",
-              margin: "5px",
-              minWidth: "150px",
-            }}
-            color="success"
+            onClick={handleHeatzone}
+            startIcon={<HeatMapIcon />}
+            variant="outlined"
+            sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}
           >
-            Home
+            View Heatzone
           </Button>
+          {authState !== EAuthState.Visitor ? (
+            <Button
+              onClick={() => logout(dispatch)}
+              startIcon={<LogoutIcon />}
+              variant="outlined"
+              sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}
+            >
+              Logout
+            </Button>
+          ) : null}
         </Box>
-      )}
-      <Drawer open={open} onClose={toggleDrawer} anchor="right">
-        <Button
-          onClick={handleHeatzone}
-          sx={{
-            position: "relative",
-            zIndex: "400",
-            margin: "10px",
-            background: "white",
-            border: "2px solid black",
-          }}
-          color="success"
-        >
-          View Heatzone
-        </Button>
-
-        <List>
-          {renderedCards}
-          <Button
-            onClick={toggleDrawer}
-            sx={{
-              position: "relative",
-              zIndex: "400",
-              margin: "10px",
-              background: "white",
-              border: "2px solid black",
-            }}
-            color="success"
-          >
-            Close Activities
-          </Button>
-        </List>
+        <List>{renderedCards}</List>
       </Drawer>
     </>
   );

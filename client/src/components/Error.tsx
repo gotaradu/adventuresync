@@ -31,7 +31,6 @@ export const Error: React.FC<{ message: string }> = ({ message }) => {
     <CustomContainer background="linear-gradient(135deg, #607274, #BAB86C)">
       <div style={{ textAlign: "center" }}>
         <h1>
-          {" "}
           {message.length > 0
             ? message + " " + (error ? error : "")
             : "There is no active error" + " " + (error ? error : "")}

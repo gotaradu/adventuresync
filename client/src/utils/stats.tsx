@@ -1,5 +1,6 @@
-import { GridColDef } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import DrawedActivity from "../models/DrawedActivity";
+
 const timeToMinutes = (time: string) => {
   if (!time) return Infinity;
   const [hours, minutes] = time.split(":").map(Number);
@@ -10,8 +11,20 @@ const compareTimes = (time1: string, time2: string) => {
   return timeToMinutes(time1) - timeToMinutes(time2);
 };
 
-export const columns: GridColDef<DrawedActivity[][number]>[] = [
-  { field: "id", headerName: "ID", width: 140 },
+export const columns: GridColDef[] = [
+  {
+    field: "id",
+    headerName: "ID",
+    width: 300,
+    renderCell: (params: any) => {
+      const stravaUrl = `https://www.strava.com/activities/${params.id}`;
+      return (
+        <a href={stravaUrl} target="_blank" rel="noopener noreferrer">
+          {params.value}
+        </a>
+      );
+    },
+  },
 
   {
     field: "name",

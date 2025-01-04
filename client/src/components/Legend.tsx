@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, useTheme } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import running from "../css/images/running.gif";
 import cycling from "../css/images/cycling.gif";
@@ -12,7 +12,7 @@ export const Legend: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const legendRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-
+  const theme = useTheme();
   const toggleLegend = () => {
     setIsOpen((prev) => !prev);
   };
@@ -24,14 +24,14 @@ export const Legend: React.FC = () => {
           ref={buttonRef}
           onClick={toggleLegend}
           sx={{
-            background: "white",
             border: "2px solid black",
             position: "fixed",
             bottom: "20px",
             left: "20px",
             zIndex: 1000,
+            backgroundColor: "white",
+            fontWeight: "bold",
           }}
-          color="success"
         >
           Legend
         </Button>

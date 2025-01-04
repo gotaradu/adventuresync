@@ -6,7 +6,7 @@ export default function CustomContainer(props: any) {
       style={{
         display: "flex",
         flexDirection: "column",
-        // justifyContent: "center",
+        justifyContent: "center",
         alignItems: "center",
         height: "100vh",
         background: props.background || "none",

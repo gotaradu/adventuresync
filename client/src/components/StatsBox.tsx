@@ -11,6 +11,8 @@ export const StatsBox: React.FC<{ activities: DrawedActivity[] }> = ({
       <DataGrid
         rows={activities}
         columns={columns}
+        autoHeight
+        autosizeOnMount
         initialState={{
           pagination: {
             paginationModel: {
@@ -18,7 +20,7 @@ export const StatsBox: React.FC<{ activities: DrawedActivity[] }> = ({
             },
           },
         }}
-        pageSizeOptions={[10]}
+        pageSizeOptions={[15]}
         disableRowSelectionOnClick
         slots={{
           toolbar: GridToolbar,
