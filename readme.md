@@ -10,7 +10,16 @@ Viewing your activities displayed on a single map is a paid feature of Strava
 Features
 1) Login using Strava account.
 2) Displaying all the activities of the logged in user on Leaflet map
-   
+
+## Description
+The login is done according to the login diagram.
+![image](https://github.com/gotaradu/adventuresync/blob/main/loginFlow.drawio.png)
+
+The tokens from Strava are stored to database and a new jwt is created which is also stored. 
+
+Ativities are handled only when accessing /activities page, loading and displaying data on the fly.
+
+The functionality can be tested without logging in, with mock data I provided from my own activities.
 
 
 ### Home Page
@@ -35,3 +44,6 @@ Features
 ### All Stats
 ![image](https://github.com/user-attachments/assets/0aea5190-f7f5-45e9-bb7a-bc77d396c707)
 ![image](https://github.com/user-attachments/assets/cbc879f2-a8a9-4392-b233-cda62feb1ba9)
+
+# Video
+[Demo video](https://i.imgur.com/gU9m6iH.mp4)
