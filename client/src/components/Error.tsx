@@ -1,7 +1,5 @@
 import CustomButton from "../components/CustomButton";
 import CustomContainer from "../components/CustomContainer";
-import { Grid } from "@mui/material";
-import { gridItemProps } from "../css/home";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuthState } from "../context/authSlice";
@@ -28,21 +26,21 @@ export const Error: React.FC<{ message: string }> = ({ message }) => {
     );
     navigate("/");
   };
-  return (
-    <Grid container>
-      <Grid {...gridItemProps}>
-        <CustomContainer>
-          <h1>{message + " " + (error ? error : "")}</h1>
-        </CustomContainer>
-      </Grid>
 
-      <Grid {...gridItemProps} sx={{ backgroundColor: "#CCCCCC" }}>
-        <CustomContainer>
-          <CustomButton handleOnClick={handleReturn}>
-            Return to main page
-          </CustomButton>
-        </CustomContainer>
-      </Grid>
-    </Grid>
+  return (
+    <CustomContainer background="linear-gradient(135deg, #607274, #BAB86C)">
+      <div style={{ textAlign: "center" }}>
+        <h1>
+          {" "}
+          {message.length > 0
+            ? message + " " + (error ? error : "")
+            : "There is no active error" + " " + (error ? error : "")}
+        </h1>
+      </div>
+
+      <CustomButton handleOnClick={handleReturn}>
+        Return to main page
+      </CustomButton>
+    </CustomContainer>
   );
 };

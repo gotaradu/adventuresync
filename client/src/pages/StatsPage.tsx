@@ -9,6 +9,7 @@ import { checkAuth } from "../utils/auth";
 
 import { CustomLoading } from "../components/CustomLoading";
 import { StatsBox } from "../components/StatsBox";
+import NavigationBar from "../components/NavigationBar";
 
 export const StatsPage = () => {
   const navigate = useNavigate();
@@ -27,7 +28,12 @@ export const StatsPage = () => {
       authState === EAuthState.User &&
       activitiesState === EActivitiesState.Fetched
     )
-      return <StatsBox activities={activities} />;
+      return (
+        <>
+          <NavigationBar />
+          <StatsBox activities={activities} />
+        </>
+      );
     else return <CustomLoading />;
   };
   return render();

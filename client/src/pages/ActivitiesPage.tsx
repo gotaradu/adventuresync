@@ -8,7 +8,7 @@ import { checkAuth } from "../utils/auth";
 import { fetchActivities, handleAllActivities } from "../utils/activities";
 import { useNavigate } from "react-router-dom";
 import { CustomLoading } from "../components/CustomLoading";
-
+import { Error } from "../components/Error";
 export const ActivitiesPage: React.FC = () => {
   const navigate = useNavigate();
   const { authState } = useSelector((state: RootState) => state.auth);
@@ -26,7 +26,11 @@ export const ActivitiesPage: React.FC = () => {
       authState === EAuthState.User &&
       activitiesState === EActivitiesState.Fetched
     )
-      return <CustomMap path="stats" />;
+      return (
+        <>
+          <CustomMap path="stats" />
+        </>
+      );
     else return <CustomLoading />;
   };
 

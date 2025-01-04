@@ -48,7 +48,6 @@ public class StravaActivitiesService {
             String API_URL = "https://www.strava.com/api/v3/athlete/activities?before=" + date.getTime() / 1000 + "&after=56&page=";
 
 
-            //get data based on jwt
             DataForAccess data = dataForAccessService.getDataFromToken(jwtCookie.get());
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + data.getAccessToken());
@@ -99,7 +98,6 @@ public class StravaActivitiesService {
             String API_URL = "https://www.strava.com/api/v3/activities/" + activityId;
 
             ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
-            System.out.println(response);
             if (response.getStatusCode().is2xxSuccessful()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 String responseBody = response.getBody();
@@ -107,19 +105,16 @@ public class StravaActivitiesService {
                     ApiActivity apiActivity = objectMapper.readValue(responseBody, ApiActivity.class);
 
                     Activity activity = ApiConverter.apiActivityConverter(apiActivity);
-                    System.out.println(activity);
                     return ResponseEntity.ok(activity);
                 }
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            System.out.println(e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     public ResponseEntity<String> getAltitudeStream(HttpServletRequest request, String activityId) throws JsonProcessingException {
-        System.out.println(activityId);
         try {
 
             Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);

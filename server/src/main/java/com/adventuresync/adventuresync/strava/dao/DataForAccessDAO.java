@@ -11,6 +11,8 @@ public interface DataForAccessDAO {
     public DataForAccess findByAthleteId(@Param("athleteId") String athleteId);
 
     public DataForAccess findByJwtToken(@Param("jwt") String jwt);
-   
+
     public void update(DataForAccess dataForAccess);
+
+    public void delete(DataForAccess dataForAccess);
 }

@@ -1,4 +1,3 @@
-
 import { LatLng } from "leaflet";
 import { setActivitiesState } from "../context/activitiesSlice";
 import { ipAddress } from "../context/config/ipAddreses";
@@ -9,10 +8,9 @@ import { ActivityState, EActivitiesState, EAuthState } from "./types";
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { checkAuth } from "./auth";
-import { mockActivities } from "./mockData";
-import { setAuthState } from "../context/authSlice";
 
-const transformDistance = (distance: number) => parseFloat((distance / 1000).toFixed(2));
+const transformDistance = (distance: number) =>
+  parseFloat((distance / 1000).toFixed(2));
 
 const transformTime = (time: number) => {
   return (
@@ -40,19 +38,19 @@ const transformPace = (speed: number) => {
       (Math.floor((1000 / speed) % 60) < 10
         ? "0" + Math.floor((1000 / speed) % 60)
         : Math.floor((1000 / speed) % 60))
-    )
-  else return ""
+    );
+  else return "";
 };
 
-
-
-const handleNewDataLocal = (activity: Activity, index: number): DrawedActivity => {
+const handleNewDataLocal = (
+  activity: Activity,
+  index: number
+): DrawedActivity => {
   const mapExists = !!activity.map;
   const pointsa = mapExists
-    ? decode(activity.map).map((point) => new LatLng(
-      point.latitude,
-      point.longitude,
-    ))
+    ? decode(activity.map).map(
+        (point) => new LatLng(point.latitude, point.longitude)
+      )
     : [];
 
   return {
@@ -76,14 +74,15 @@ const handleNewDataLocal = (activity: Activity, index: number): DrawedActivity =
     startLatLng: activity.startLatLng,
     calories: activity.calories,
   };
-}
+};
 export const handleNewData = (data: any): DrawedActivity[] => {
-  return data.map((activity: Activity, index: number) => handleNewDataLocal(activity, index));
+  return data.map((activity: Activity, index: number) =>
+    handleNewDataLocal(activity, index)
+  );
 };
 
 export const fetchActivities = async (dispatch: any, page = 1) => {
   try {
-
     const response = await fetch(`${ipAddress}:8080/activities?page=${page}`, {
       method: "GET",
       headers: {
@@ -145,14 +144,17 @@ export const getAllActivities = async (dispatch: any) => {
 };
 
 export const getSingleActivity = async (activityId: string | undefined) => {
-  const response = await fetch(`${ipAddress}:8080/activities/activity?activityId=${activityId}`, {
-    method: "GET",
-    headers: {
-      Origin: `${ipAddress}:3000`,
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${ipAddress}:8080/activities/activity?activityId=${activityId}`,
+    {
+      method: "GET",
+      headers: {
+        Origin: `${ipAddress}:3000`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}`);
@@ -160,17 +162,20 @@ export const getSingleActivity = async (activityId: string | undefined) => {
 
   const data = await response.json();
   return handleNewDataLocal(data, 0);
-}
+};
 
 export const getAltitude = async (activityId: string | undefined) => {
-  const response = await fetch(`${ipAddress}:8080/activities/stream/activity?activityId=${activityId}`, {
-    method: "GET",
-    headers: {
-      Origin: `${ipAddress}:3000`,
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${ipAddress}:8080/activities/stream/activity?activityId=${activityId}`,
+    {
+      method: "GET",
+      headers: {
+        Origin: `${ipAddress}:3000`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}`);
@@ -178,9 +183,14 @@ export const getAltitude = async (activityId: string | undefined) => {
 
   const data = await response.json();
   return data;
-}
+};
 
-export const handleAllActivities = async (authState: EAuthState, activitiesState: EActivitiesState, navigate: NavigateFunction, dispatch: Dispatch<UnknownAction>) => {
+export const handleAllActivities = async (
+  authState: EAuthState,
+  activitiesState: EActivitiesState,
+  navigate: NavigateFunction,
+  dispatch: Dispatch<UnknownAction>
+) => {
   if (
     authState === EAuthState.Error ||
     activitiesState === EActivitiesState.Error ||
@@ -201,7 +211,13 @@ export const handleAllActivities = async (authState: EAuthState, activitiesState
   }
 };
 
-export const handleSingleActivity = async (authState: EAuthState, navigate: NavigateFunction, activityId: string | undefined, dispatch: Dispatch<UnknownAction>, useCustomState: React.Dispatch<React.SetStateAction<ActivityState>>) => {
+export const handleSingleActivity = async (
+  authState: EAuthState,
+  navigate: NavigateFunction,
+  activityId: string | undefined,
+  dispatch: Dispatch<UnknownAction>,
+  useCustomState: React.Dispatch<React.SetStateAction<ActivityState>>
+) => {
   if (
     authState === EAuthState.Error ||
     authState === EAuthState.Forbidden ||
@@ -214,7 +230,7 @@ export const handleSingleActivity = async (authState: EAuthState, navigate: Navi
   if (authState === EAuthState.User) {
     try {
       const apiActivity = await getSingleActivity(activityId);
-      console.log(apiActivity)
+      console.log(apiActivity);
       const altitudeStreamData = await getAltitude(activityId);
       useCustomState((prevState) => ({
         ...prevState,
@@ -231,5 +247,4 @@ export const handleSingleActivity = async (authState: EAuthState, navigate: Navi
   } else if (authState === EAuthState.Guest) {
     await checkAuth(dispatch);
   }
-}
-
+};

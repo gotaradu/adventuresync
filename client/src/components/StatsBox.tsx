@@ -7,7 +7,7 @@ export const StatsBox: React.FC<{ activities: DrawedActivity[] }> = ({
   activities,
 }) => {
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box>
       <DataGrid
         rows={activities}
         columns={columns}
@@ -20,8 +20,6 @@ export const StatsBox: React.FC<{ activities: DrawedActivity[] }> = ({
         }}
         pageSizeOptions={[10]}
         disableRowSelectionOnClick
-        autoHeight
-        autosizeOnMount
         slots={{
           toolbar: GridToolbar,
         }}

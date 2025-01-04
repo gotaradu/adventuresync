@@ -18,9 +18,7 @@ export const CustomActivity: React.FC<{
       ) : (
         <Card>
           <CardContent sx={{ textAlign: "center" }}>
-            ------------------------------------------------------- streamData
-            graph should be here but the feature is not available on mock data
-            -------------------------------------------------------
+            The feature is not available on mock data
           </CardContent>
         </Card>
       )}

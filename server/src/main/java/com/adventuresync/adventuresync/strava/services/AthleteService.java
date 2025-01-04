@@ -1,9 +1,11 @@
 package com.adventuresync.adventuresync.strava.services;
 
 import com.adventuresync.adventuresync.strava.dao.impl.SummaryAthleteDAOImpl;
+import com.adventuresync.adventuresync.strava.exceptions.DataForAccessException;
 import com.adventuresync.adventuresync.strava.exceptions.ErrorCode;
 import com.adventuresync.adventuresync.strava.exceptions.SummaryAthleteException;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
+import jakarta.persistence.TransactionRequiredException;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,5 +58,13 @@ public class AthleteService {
         if (id != null)
             return summaryAthleteDAO.findById(id);
         else return null;
+    }
+
+    public void removeAthlete(SummaryAthlete athlete) {
+        try {
+            summaryAthleteDAO.delete(athlete);
+        } catch (IllegalArgumentException | TransactionRequiredException e) {
+            throw new DataForAccessException(ErrorCode.ERR006, athlete.toString());
+        }
     }
 }

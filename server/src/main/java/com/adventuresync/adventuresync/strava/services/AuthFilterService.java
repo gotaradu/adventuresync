@@ -48,15 +48,16 @@ public class AuthFilterService implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
 
-        System.out.println("Request URI: " + httpRequest.getRequestURI());
-
-
         if (httpRequest.getMethod().equalsIgnoreCase("OPTIONS")) {
             setHeaders(httpResponse);
             return;
         }
 
-        if (!httpRequest.getRequestURI().equals("/error") && !httpRequest.getRequestURI().equals("/home") && !httpRequest.getRequestURI().equals("/activities") && !httpRequest.getRequestURI().equals("/activities/activity") && !httpRequest.getRequestURI().equals("/activities/stream/activity")) {
+        if (!httpRequest.getRequestURI().equals("/error") && !httpRequest.getRequestURI().equals("/home") &&
+                !httpRequest.getRequestURI().equals("/activities") &&
+                !httpRequest.getRequestURI().equals("/activities/activity") &&
+                !httpRequest.getRequestURI().equals("/activities/stream/activity") &&
+                !httpRequest.getRequestURI().equals("/logou")) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -79,12 +80,9 @@ public class AuthFilterService implements Filter {
                     filterChain.doFilter(servletRequest, servletResponse);
                 }
             } else {
-                System.out.println("intra aici cumva?");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (IOException | DataForAccessException | CookieException e) {
-            System.out.println("plm 2");
-
             setHeaders(httpResponse);
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }

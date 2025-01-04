@@ -8,4 +8,6 @@ public interface SummaryAthleteDAO {
     void save(SummaryAthlete summaryAthlete);
 
     void update(SummaryAthlete summaryAthlete);
+
+    void delete(SummaryAthlete summaryAthlete);
 }

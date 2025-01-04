@@ -39,7 +39,6 @@ public class AuthController {
         }
     }
 
-
     @GetMapping("/exchange_token")
     public RedirectView getRequestParamsForLogin(@RequestParam(required = false) String code, @RequestParam(required = false) String scope, @RequestParam(required = false) String state,
                                                  @RequestParam(required = false) String error, HttpServletResponse response) {
@@ -60,4 +59,12 @@ public class AuthController {
         return redirectView;
 
     }
+
+    @GetMapping("logou")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+//        System.out.println(request.getRequestURI() + " from here ");
+        stravaLoginService.logou(request, response);
+
+    }
+
 }

@@ -70,4 +70,10 @@ public class DataForAccessDAOImpl implements DataForAccessDAO {
     public void update(DataForAccess dataForAccess) {
         entityManager.merge(dataForAccess);
     }
+
+    @Override
+    @Transactional
+    public void delete(DataForAccess dataForAccess) {
+        entityManager.remove(dataForAccess);
+    }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class StravaLoginService {
@@ -52,40 +53,46 @@ public class StravaLoginService {
         }
     }
 
-    public DataForAccess getNewAccessToken(String jwt) throws SummaryAthleteException {
+    public DataForAccess getNewAccessToken(String jwt) throws DataForAccessException {
 
         try {
             String athleteId = tokenService.getAthleteIdFromJwt(jwt);
-            System.out.println(athleteId + " athlete from old jwt");
-            DataForAccess data = dataForAccessService.getDataFromToken(jwt); // cauta in database sa vedem daca exista data pt jwt primit
-            System.out.println(data + " data from database");
-            // daca exista, facem un req la strava cu refresh tokenul
-            DataForAccess newData = tokenService.getDataForRefresh(data.getRefreshToken(), athleteId);// ddata returned from strava
-            System.out.println(data.getRefreshToken() + " asta e refresh token");
-            //aici nu se trimite athlete
-            System.out.println(newData + " this is new data");
+
+            DataForAccess data = dataForAccessService.getDataFromToken(jwt);
+
+            DataForAccess newData = tokenService.getDataForRefresh(data.getRefreshToken(), athleteId);
+
+
             SummaryAthlete athlete = athleteService.getAthleteById(athleteId);
-            System.out.println(athlete + " this is athlete from database ");
+
             newData.setSummaryAthlete(athlete);
             dataForAccessService.updateData(newData);
             return newData;
 
-        } catch (SummaryAthleteException | DataForAccessException | JwtException e) { // custom aici
+        } catch (SummaryAthleteException | DataForAccessException | JwtException e) {
             System.out.println(e.getMessage());
+
         }
         throw new DataForAccessException(ErrorCode.ERR0105, null);
     }
 
-    public SummaryAthlete getAthleteFromJwt(HttpServletRequest request) throws JwtException {
+    public <T> T getDataFromJwt(HttpServletRequest request, Function<DataForAccess, T> mapper) throws JwtException {
         Optional<String> jwtCookie = cookieService.getJwtCookie("jwt", request);
         if (jwtCookie.isEmpty())
             throw new JwtException(ErrorCode.ERR0106, null);
+
         if (!tokenService.isExpiredJwt(jwtCookie.get())) {
-            return dataForAccessService.getDataFromToken(jwtCookie.get()).getSummaryAthlete();
+            DataForAccess data = dataForAccessService.getDataFromToken(jwtCookie.get());
+            return mapper.apply(data);
         } else {
-            System.out.println(jwtCookie.get());
-            throw new JwtException(ErrorCode.ERR0101, "ce  intra aici");
+            throw new JwtException(ErrorCode.ERR0101, jwtCookie.get());
         }
+    }
+    public SummaryAthlete getAthleteFromJwt(HttpServletRequest request) throws JwtException {
+        return getDataFromJwt(request, DataForAccess::getSummaryAthlete);
+    }
+    public DataForAccess getDataFromJwt(HttpServletRequest request) throws JwtException {
+        return getDataFromJwt(request, data -> data);
     }
 
     public void sentRefreshResponse(HttpServletResponse httpResponse, String jwt) throws IOException {
@@ -104,11 +111,18 @@ public class StravaLoginService {
         ObjectMapper objectMapper = new ObjectMapper();
         if (responseBody != null) {
             String responseJson = objectMapper.writeValueAsString(responseBody);
-            System.out.println(responseJson + " asta se trimite ca response");
             PrintWriter out = httpResponse.getWriter();
             out.print(responseJson);
             out.flush();
         }
+    }
+
+    public void logou(HttpServletRequest request, HttpServletResponse response) {
+        SummaryAthlete athlete = getAthleteFromJwt(request);
+        DataForAccess data = getDataFromJwt(request);
+        dataForAccessService.removeData(data);
+        athleteService.removeAthlete(athlete);
+        cookieService.deleteCookie(response, "jwt");
     }
 
 }

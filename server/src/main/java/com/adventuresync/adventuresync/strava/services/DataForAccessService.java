@@ -9,6 +9,7 @@ import com.adventuresync.adventuresync.strava.model.DataForAccess;
 import com.adventuresync.adventuresync.strava.model.SummaryAthlete;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.TransactionRequiredException;
 import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +43,9 @@ public class DataForAccessService {
         return dataForAccessDAO.findByJwtToken(jwt);
     }
 
+
     @Transactional
-    public void updateData(DataForAccess data) {
+    public void updateData(DataForAccess data) throws DataForAccessException, SummaryAthleteException {
         try {
             SummaryAthlete a = summaryAthleteDAO.findById(data.getSummaryAthlete().getId());
             DataForAccess d = dataForAccessDAO.findByAthleteId(data.getSummaryAthlete().getId());
@@ -68,9 +70,19 @@ public class DataForAccessService {
             updateData(data);
         } catch (DataForAccessException e) {
             dataForAccessDAO.save(data);
-        } catch (HibernateException error) {
+        } catch (HibernateException | SummaryAthleteException error) {
             throw new DataForAccessException(ErrorCode.ERR002, data.getSummaryAthlete().toString());
         }
     }
+
+    @Transactional
+    public void removeData(DataForAccess data) {
+        try {
+            dataForAccessDAO.delete(data);
+        } catch (IllegalArgumentException | TransactionRequiredException e) {
+            throw new DataForAccessException(ErrorCode.ERR006, data.toString());
+        }
+    }
+
 
 }

@@ -12,7 +12,7 @@ const authSlice = createSlice({
   initialState: initialAuthState,
   reducers: {
     setAuthState(state, action: PayloadAction<IAuthState>) {
-      state.authState = action.payload.authState; // "mutate state" but toolkit does all the magic
+      state.authState = action.payload.authState;
       state.athlete = action.payload.athlete;
       state.message = action.payload.message;
     },

@@ -9,6 +9,7 @@ public enum ErrorCode {
     ERR004("Athlete saving to database has failed in DataForAccessService"),
 
     ERR005("Athlete updating in database has failed"),
+    ERR006("Data could not be deleted"),
 
 
     // Cookie

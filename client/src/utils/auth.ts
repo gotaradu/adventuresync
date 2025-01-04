@@ -13,10 +13,10 @@ export const checkAuth = async (dispatch: any) => {
       },
       credentials: "include",
     });
-    console.log("Response received:", response);
+
     if (response.ok) {
       const resp = await response;
-      console.log(resp)
+
       const data: ApiResp = await response.json();
       dispatch(
         setAuthState({
@@ -51,7 +51,7 @@ export const checkAuth = async (dispatch: any) => {
       );
   } catch (error) {
     console.log(error);
-    console.log("aici")
+
     dispatch(
       setAuthState({
         authState: EAuthState.Guest,
@@ -59,5 +59,27 @@ export const checkAuth = async (dispatch: any) => {
         message: "Error on the server",
       })
     );
+  }
+};
+export const logout = async (dispatch: any) => {
+  try {
+    const response = await fetch(`${ipAddress}:8080/logou`, {
+      method: "GET",
+      headers: {
+        Origin: `${ipAddress}:3000`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    dispatch(
+      setAuthState({
+        authState: EAuthState.Guest,
+        athlete: undefined,
+        message: "Guest",
+      })
+    );
+  } catch (error) {
+    console.error("Error during logout: ", error);
   }
 };

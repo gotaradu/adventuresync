@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../context/store";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { Error } from "../components/Error";
 import { useEffect, useState } from "react";
 import { ActivityState, EAuthState } from "../utils/types";
 
 import { CustomActivity } from "../components/CustomActivity";
 import { handleSingleActivityMock } from "../utils/visitor";
-import { Error } from "../components/Error";
+
+import NavigationBar from "../components/NavigationBar";
 
 export const ActivityPageMock: React.FC = () => {
   const { activityId } = useParams<{ activityId: string | undefined }>();
@@ -34,10 +35,13 @@ export const ActivityPageMock: React.FC = () => {
       );
     if (authState === EAuthState.Visitor && localStorage.getItem("visitor"))
       return (
-        <CustomActivity
-          activity={customState.activity}
-          streamData={customState.altitudeStream}
-        />
+        <>
+          <NavigationBar />
+          <CustomActivity
+            activity={customState.activity}
+            streamData={customState.altitudeStream}
+          />
+        </>
       );
     else
       return (

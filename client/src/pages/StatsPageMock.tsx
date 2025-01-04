@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { handleOnRender } from "../utils/visitor";
 import { CustomLoading } from "../components/CustomLoading";
 import { StatsBox } from "../components/StatsBox";
+import NavigationBar from "../components/NavigationBar";
 
 export const StatsPageMock: React.FC = () => {
   const navigate = useNavigate();
@@ -28,7 +29,12 @@ export const StatsPageMock: React.FC = () => {
       localStorage.getItem("visitor") &&
       activitiesState === EActivitiesState.Fetched
     )
-      return <StatsBox activities={activities} />;
+      return (
+        <>
+          <NavigationBar />
+          <StatsBox activities={activities} />
+        </>
+      );
     else return <CustomLoading />;
   };
 

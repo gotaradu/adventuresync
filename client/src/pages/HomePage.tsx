@@ -1,8 +1,5 @@
-import Grid from "@mui/material/Grid";
 import { Error } from "../components/Error";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { gridItemProps } from "../css/home";
 import { ipAddress } from "../context/config/ipAddreses";
 import { EAuthState } from "../utils/types";
 import CustomButton from "../components/CustomButton";
@@ -13,6 +10,8 @@ import { useEffect, useState } from "react";
 import { checkAuth } from "../utils/auth";
 import { setAuthState } from "../context/authSlice";
 import { CustomLoading } from "../components/CustomLoading";
+import "../css/home.css";
+import Buttons from "../components/Buttons";
 
 export const HomePage: React.FC = () => {
   const { authState, athlete } = useSelector((state: RootState) => state.auth);
@@ -38,18 +37,7 @@ export const HomePage: React.FC = () => {
     navigate("/activities-mock");
   };
 
-  const handleButton = (path: string) => {
-    navigate(path);
-  };
-  const handleLogout = () => {
-    console.log('logout not implemented')
-    navigate("/");
-  };
-
-  const defaultTheme = createTheme();
-
   useEffect(() => {
-    console.log("called");
     const timeoutId = setTimeout(() => {
       setIsChecking(false);
     }, 300);
@@ -74,26 +62,23 @@ export const HomePage: React.FC = () => {
   const handleView = () => {
     if (isChecking || (!canShowWelcome && !athlete))
       return (
-        <Grid {...gridItemProps}>
+        <CustomContainer background="linear-gradient(135deg, #607274, #BAB86C)">
           <CustomLoading />
-        </Grid>
+        </CustomContainer>
       );
     else if (athlete && authState === EAuthState.User) {
       return (
-        <Grid {...gridItemProps}>
-          <CustomContainer>
-            <div style={{ textAlign: "center" }}>
-              <h1>Bun venit, {athlete.firstname}!</h1>
-              <CustomButton handleOnClick={() => handleButton("/activities")}>
-                Activities
-              </CustomButton>
-              <CustomButton handleOnClick={() => handleButton("/stats")}>
-                Stats
-              </CustomButton>
-              <CustomButton handleOnClick={handleLogout}>Logout</CustomButton>
+        <>
+          <CustomContainer background="linear-gradient(135deg, #607274, #BAB86C)">
+            <div className="adventure-text" style={{ color: "#BAB86C" }}>
+              Adventure
             </div>
+            <div className="adventure-text" style={{ color: "#607274" }}>
+              Sync
+            </div>
+            <Buttons />
           </CustomContainer>
-        </Grid>
+        </>
       );
     } else if (!athlete && authState === EAuthState.Error)
       return <Error message="Something went wrong" />;
@@ -105,40 +90,23 @@ export const HomePage: React.FC = () => {
         authState === EAuthState.Visitor)
     ) {
       return (
-        <Grid {...gridItemProps}>
-          <CustomContainer>
-            <CustomButton handleOnClick={handleLogin}>
-              Login with Strava
-            </CustomButton>
-            <CustomButton handleOnClick={handleMock}>
-              with Custom data
-            </CustomButton>
-          </CustomContainer>
-        </Grid>
+        <CustomContainer background="linear-gradient(135deg, #607274, #BAB86C)">
+          <div className="adventure-text" style={{ color: "#BAB86C" }}>
+            Adventure
+          </div>
+          <div className="adventure-text" style={{ color: "#607274" }}>
+            Sync
+          </div>
+          <CustomButton handleOnClick={handleLogin}>
+            Login with Strava
+          </CustomButton>
+          <CustomButton handleOnClick={handleMock}>
+            with Custom data
+          </CustomButton>
+        </CustomContainer>
       );
     }
   };
-  const renderPage = () => {
-    return (
-      <ThemeProvider theme={defaultTheme}>
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            sx={{
-              backgroundRepeat: "no-repeat",
-              backgroundColor: "#607274",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
 
-          {handleView()}
-        </Grid>
-      </ThemeProvider>
-    );
-  };
-
-  return renderPage();
+  return <>{handleView()}</>;
 };

@@ -37,4 +37,10 @@ public class SummaryAthleteDAOImpl implements SummaryAthleteDAO {
         entityManager.find(SummaryAthlete.class, summaryAthlete.getId());
         entityManager.merge(summaryAthlete);
     }
+
+    @Override
+    @Transactional
+    public void delete(SummaryAthlete summaryAthlete) {
+        entityManager.remove(summaryAthlete);
+    }
 }

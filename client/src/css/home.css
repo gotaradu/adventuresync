@@ -1,0 +1,28 @@
+.home-container {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #607274, #bab86c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.adventure-text {
+  font-family: "Dancing Script", cursive;
+  font-size: 72px;
+  font-weight: 500;
+  text-shadow: 1px 1px 0 #ffffff, 2px 2px 3px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 20px;
+  background: none;
+}
+
+@media (max-width: 768px) {
+  .adventure-text {
+    font-size: 48px;
+    text-shadow: none;
+    letter-spacing: 1px;
+  }
+}

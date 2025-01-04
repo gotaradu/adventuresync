@@ -2,12 +2,14 @@ import Container from "@mui/material/Container";
 export default function CustomContainer(props: any) {
   return (
     <Container
-      maxWidth="sm"
+      maxWidth={false}
       style={{
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
+        // justifyContent: "center",
         alignItems: "center",
         height: "100vh",
+        background: props.background || "none",
       }}
     >
       {props.children}

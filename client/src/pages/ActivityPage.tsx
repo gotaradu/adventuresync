@@ -9,6 +9,7 @@ import { handleSingleActivity } from "../utils/activities";
 import { Error } from "../components/Error";
 import { CustomActivity } from "../components/CustomActivity";
 import { CustomLoading } from "../components/CustomLoading";
+import NavigationBar from "../components/NavigationBar";
 
 export const ActivityPage: React.FC = () => {
   const { activityId } = useParams<{ activityId: string | undefined }>();
@@ -42,10 +43,13 @@ export const ActivityPage: React.FC = () => {
     customState.altitudeStream
   )
     return (
-      <CustomActivity
-        activity={customState.activity}
-        streamData={customState.altitudeStream}
-      />
+      <>
+        <NavigationBar />
+        <CustomActivity
+          activity={customState.activity}
+          streamData={customState.altitudeStream}
+        />
+      </>
     );
   else {
     return <Error message={customState.fetchError} />;
