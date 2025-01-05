@@ -3,11 +3,10 @@
 1) A Spring-Boot backend application developed to interact with Strava API.
 2) A React frontend application developed to interact with the backend for displaying data about the logged in user.
 
-##Purpose
+## Purpose
 Viewing your activities displayed on a single map is a paid feature of Strava 
 
-##
-Features
+## Features
 1) Login using Strava account.
 2) Displaying all the activities of the logged in user on Leaflet map
 
